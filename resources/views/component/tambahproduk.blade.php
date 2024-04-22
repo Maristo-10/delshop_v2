@@ -41,11 +41,8 @@
                         <label for="kategori_produk">Kategori Produk</label>
                         <select class="form-control" id="kategori_produk" name="kategori_produk">
                             <option disabled selected>Pilih Kategori Produk</option>
-                            <option value="Baju">Baju</option>
-                            <option value="Baju">Baju</option>
-                            <option value="Baju">Baju</option>
-                            <option value="Pin">Pin</option>
-                            <option value="Pin">Pin</option>
+                            <option value="Pakaian">Pakaian</option>
+                            <option value="Sepatu">Sepatu</option>
                         </select>
                     </div>
                     <div class="form-group mb-3">

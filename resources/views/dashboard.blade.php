@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('https://cdn.jsdelivr.net/npm/sweetalert2@10') }}">
     <link rel="stylesheet" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css') }}" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('admin/css/feather.css') }}">
-    <link rel="stylesheet" href="{{ asset('admin/css/dataTables.bootstrap4.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('admin/css/dataTables.bootstrap4.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('admin/css/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/css/dropzone.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/css/uppy.min.css') }}">
@@ -123,6 +123,9 @@
 
     </div> <!-- .wrapper -->
     <script src="{{ asset('https://cdn.jsdelivr.net/npm/sweetalert2@10') }}"></script>
+    <script src="{{ asset('https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')}}"></script>
+    {{-- <script src="{{ asset('admin/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{ asset('admin/js/dataTables.bootstrap4.min.js')}}"></script> --}}
     <script src="{{ asset('admin/js/jquery.min.js') }}"></script>
     <script src="{{ asset('admin/js/popper.min.js') }}"></script>
     <script src="{{ asset('admin/js/moment.min.js') }}"></script>
@@ -138,6 +141,8 @@
     <script src="{{ asset('admin/js/datamaps-zoomto.js') }}"></script>
     <script src="{{ asset('admin/js/datamaps.custom.js') }}"></script>
     <script src="{{ asset('admin/js/Chart.min.js') }}"></script>
+    <script src="{{ asset('admin/js/popper.min.js') }}"></script>
+    <script src="{{ asset('admin/js/moment.min.js') }}"></script>
     <script>
         /* defind global options */
         Chart.defaults.global.defaultFontFamily = base.defaultFontFamily;

@@ -31,11 +31,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link pl-3" href="./ui-typograpy.html"><span class="ml-1 item-text">Kelola Kategori
+                        <a class="nav-link pl-3" href="/kelola/kategori-produk"><span class="ml-1 item-text">Kelola Kategori
                                 Produk</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link pl-3" href="./ui-icons.html"><span class="ml-1 item-text">Detail Penjualan
+                        <a class="nav-link pl-3" href="/detail/penjualan/produk"><span class="ml-1 item-text">Detail Penjualan
                                 Produk</span></a>
                     </li>
                 </ul>

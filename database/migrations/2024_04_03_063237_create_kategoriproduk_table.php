@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('kategoriproduk', function (Blueprint $table) {
             $table->string("kategori")->primary();
             $table->string('gambar_kategori')->nullable();
+            $table->string("status_kategori")->default("Aktif");
             $table->timestamps();
         });
     }

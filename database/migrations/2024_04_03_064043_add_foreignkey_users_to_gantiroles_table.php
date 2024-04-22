@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('gantiroles', function (Blueprint $table) {
-            $table->foreign("user_id")->references("id")->on("users")->onDelete('cascade');
+            $table->foreign("user_id")->references("id")->on("users")->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

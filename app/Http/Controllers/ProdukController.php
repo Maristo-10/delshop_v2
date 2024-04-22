@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use PDO;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProdukController extends Controller
 {
@@ -112,5 +114,38 @@ class ProdukController extends Controller
         }
 
         return redirect()->route("admin.kelolaproduk")->with('success', 'Status Produk Berhasil Diubah');
+    }
+
+    public function penjualanproduk(){
+        $now = Carbon::now()->format('Y');
+        $produk = DB::table('produk')
+            ->leftJoin('pesanandetails', function ($join) {
+                $join->on('produk.id_produk', '=', 'pesanandetails.produk_id')
+                    ->where('pesanandetails.updated_at', '>=', Carbon::now()->subYear());
+            })
+            ->leftJoin('pesanans', function ($join) {
+                $join->on('pesanandetails.pesanan_id', '=', 'pesanans.id')
+                    ->where('pesanans.status', '=', 'Selesai');
+            })
+            ->select('produk.nama_produk','produk.harga', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.kategori_produk', 'produk.ukuran_produk','produk.warna', 'produk.angkatan', 'produk.id_produk','produk.gambar_produk','produk.role_pembeli')
+            ->selectRaw('SUM(CASE WHEN YEAR(pesanans.tanggal) = '.$now.' THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS total')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 1 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS januari')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 2 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS februari')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 3 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS maret')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 4 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS april')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 5 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS mei')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 6 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS juni')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 7 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS juli')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 8 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS agustus')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 9 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS september')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 10 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS oktober')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 11 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS november')
+            ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 12 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS desember')
+            ->groupBy('id_produk','produk.nama_produk', 'produk.harga', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.kategori_produk', 'produk.ukuran_produk','produk.warna', 'produk.angkatan','produk.gambar_produk','produk.role_pembeli')
+            ->orderBy('total', 'DESC')
+            ->get();
+        return view('admin.detailpenjualanproduk',[
+            'produk'=>$produk
+        ]);
     }
 }

@@ -79,7 +79,7 @@
         </div>
         <div class="col-md-12 pt-4 pb-5">
             <div class="row" style="justify-content: right">
-                <button class="btn btn-warning col-md-1" type="button" onclick="ubahConfirmation()">Ubah</button>
+                <button class="btn btn-warning col-md-1" type="button" onclick="ubahConfirmation()">Simpan</button>
                 <script>
                     function ubahConfirmation() {
                         Swal.fire({

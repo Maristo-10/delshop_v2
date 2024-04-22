@@ -2,7 +2,8 @@
     href="https://cdn.datatables.net/v/bs4/dt-1.10.18/r-2.2.2/sc-2.0.0/datatables.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <a href="/tambah/produk" class="btn btn-primary">Tambah</a>
+
+    <a href="/tambah/produk" class="btn btn-primary"> <i class="fa-solid fa-circle-plus pr-2"></i> Tambah Produk</a>
 @if (session('error'))
     <script>
         // Tampilkan pesan error dalam pop-up
