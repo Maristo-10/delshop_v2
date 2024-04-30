@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\KategoriProdukController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PesananController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,33 +17,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home/dashboard_pembeli');
-});
+Route::get('/', [Controller::class, 'dash_pembeli'])->name('home.dashboard_pembeli');
+Route::get('/produk', [ProdukController::class, 'produk'])->name('pembeli.produk');
+Route::get('/detailproduk/{id}',[ProdukController::class, 'detailproduk'])->name('pembeli.detailproduk');
+Route::post('/tambah/keranjang/{id}',[PesananController::class, 'tambahkeranjang'])->name('pembeli.tambahkeranjang');
+Route::get('/keranjang',[PesananController::class, 'keranjang'])->name('pembeli.keranjang');
+Route::get('/checkout',[PesananController::class, 'checkout'])->name('pembeli.checkout');
+Route::post('/proses/checkout',[PesananController::class, 'prosescheckout'])->name('pembeli.prosescheckout');
+Route::post('/checkout/produk', [PesananController::class, 'checkoutproduk'])->name('pembeli.checkoutproduk');
+Route::get('/riwayat-pesanan', [PesananController::class, 'riwayatpesanan'])->name('pembeli.riwayatpesanan');
+Route::get('/batalkan/pesanan/{id}',[PesananController::class, 'batalkanpesanan'])->name('pembeli.batalkanpesanan');
+Route::get('/detail-pesanan/{kode}', [PesananController::class, 'detailpesanan'])->name('pembeli.detailpesanan');
 
-Route::get('/produk', function () {
-    return view('pembeli/produk');
-});
-
-Route::get('/detailproduk', function () {
-    return view('pembeli/detailproduk');
-});
-
-Route::get('/keranjang', function () {
-    return view('pembeli/keranjang');
-});
-
-Route::get('/checkout', function () {
-    return view('pembeli/checkout');
-});
-
-Route::get('/riwayat-pesanan', function () {
-    return view('pembeli/riwayatpesanan');
-});
-
-Route::get('/detail-pesanan', function () {
-    return view('pembeli/detailpesanan');
-});
 
 
 //admin
@@ -63,5 +50,12 @@ Route::post('/proses/tambah/kategori-produk',[KategoriProdukController::class, '
 Route::get('/proses/ubah/status/kategori-produk/{kategori}', [KategoriProdukController::class, 'ubahstatuskategoriproduk'])->name('admin.updatestatuskategoriproduk');
 Route::get('/ubah/kategori-produk/{kategori}', [KategoriProdukController::class, 'ubahkategoriproduk'])->name('admin.ubahkategoriproduk');
 Route::post('/proses/ubah/kategori-produk/{kategori}',[KategoriProdukController::class, 'prosesubahkategoriproduk'])->name('admin.prosesubahkategoriproduk');
-
 Route::get('/detail/penjualan/produk', [ProdukController::class, 'penjualanproduk'])->name('admin.detailpenjualanproduk');
+
+Route::get('/konfirmasi/pesanan',[PesananController::class, 'konfirmasipesanan'])->name('admin.konfirmasipesanan');
+Route::get('/proses/konfirmasi/pesanan/{id}',[PesananController::class, 'proseskonfirmasi'])->name('admin.proseskonfirmasi');
+Route::post('/pembatalan/pesanan/{id}',[PesananController::class, 'pembatalan'])->name('admin.pembatalanpesanan');
+Route::get('/pesanan/diproses',[PesananController::class, 'pesanandiproses'])->name('admin.pesanandiproses');
+Route::get('/proses/selesai/pesanan/{id}',[PesananController::class, 'prosesselesai'])->name('admin.prosesselesai');
+Route::get('/pesanan/selesai',[PesananController::class, 'pesananselesai'])->name('admin.pesananselesai');
+Route::get('/pesanan/dibatalkan',[PesananController::class, 'pesanandibatalkan'])->name('admin.pesanandibatalkan');

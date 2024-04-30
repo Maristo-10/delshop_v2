@@ -86,18 +86,21 @@
                     <h2 class="h3 mb-3 text-black">Kategori Produk</h2>
                 </div>
                 <div class="row col-md-12 justify-content-center">
-                    <div class="col-sm-6 col-md-6 col-lg-2 mb-4 mb-lg-0">
-                        <a class="block-2-item" href="#">
-                            <figure class="image">
-                                <img src="pembeli/images/women.jpg" alt="" class="img-fluid">
-                            </figure>
-                            <div class="text">
-                                <span class="text-uppercase">Collections</span>
-                                <h6>Women</h6>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-2 mb-5 mb-lg-0">
+                    @foreach ($kategori_produk as $katpro)
+                        <div class="col-sm-6 col-md-6 col-lg-2 mb-4 mb-lg-0">
+                            <a class="block-2-item" href="#">
+                                <figure class="image">
+                                    <img src="/kategori-produk-images/{{$katpro->gambar_kategori}}" alt="" class="img-fluid w-100" style="min-height: 150px">
+                                </figure>
+                                <div class="text">
+                                    <span class="text-uppercase">kategori</span>
+                                    <h6>{{$katpro->kategori}}</h6>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+
+                    {{-- <div class="col-sm-6 col-md-6 col-lg-2 mb-5 mb-lg-0">
                         <a class="block-2-item" href="#">
                             <figure class="image">
                                 <img src="pembeli/images/children.jpg" alt="" class="img-fluid">
@@ -118,7 +121,7 @@
                                 <h6>Men</h6>
                             </div>
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

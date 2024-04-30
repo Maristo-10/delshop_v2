@@ -23,21 +23,29 @@
                     </div>
                 </div>
                 <div class="row mb-5">
-                    <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
-                        <div class="block-4 text-center border">
-                            <figure class="block-4-image">
-                                <a href="/detailproduk"><img src="pembeli/images/cloth_1.jpg" alt="Image placeholder"
-                                        class="img-fluid"></a>
-                            </figure>
-                            <a href="/detailproduk">
-                                <div class="block-4-text p-4">
-                                    <h3>Tank Top</h3>
-                                    <p class="mb-0">Rp. 100.000</p>
+                    @foreach ($produk as $pro)
+                        <div class="col-sm-6 col-lg-3 mb-4" data-aos="fade-up">
+                            <div class="block-4 text-center border">
+                                <figure class="block-4-image">
+                                    <a href="/detailproduk/{{$pro->id_produk}}"><img src="/product-images/{{ $pro->gambar_produk }}"
+                                            alt="Image placeholder" class="img-fluid"
+                                            style="min-height: 150px; max-height: 150px; min-width: 180px"></a>
+                                </figure>
+
+                                <div class="block-4-text">
+                                    <a href="/detailproduk/{{$pro->id_produk}}">
+                                        <h6>{{ $pro->nama_produk }}</h6>
+                                    </a>
+                                    <p class="mb-0">Rp. <?php
+                                        $angka = $pro->harga;
+                                        echo number_format($angka, 0, ',', '.');
+                                        ?></p>
                                     <p class="text-primary font-weight-bold">Belum Terjual</p>
                                 </div>
-                            </a>
+
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
                 <div class="row" data-aos="fade-up">
                     <div class="col-md-12 text-center">
@@ -60,12 +68,10 @@
                 <div class="border p-4 rounded mb-4">
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">Kategori</h3>
                     <ul class="list-unstyled mb-0">
-                        <li class="mb-1"><a href="#" class="d-flex"><span>Men</span> <span
-                                    class="text-black ml-auto">(2,220)</span></a></li>
-                        <li class="mb-1"><a href="#" class="d-flex"><span>Women</span> <span
-                                    class="text-black ml-auto">(2,550)</span></a></li>
-                        <li class="mb-1"><a href="#" class="d-flex"><span>Children</span> <span
-                                    class="text-black ml-auto">(2,124)</span></a></li>
+                        @foreach ($kategori_produk as $kapro)
+                        <li class="mb-1"><a href="#" class="d-flex"><span>{{$kapro->kategori}}</span> <span
+                            class="text-black ml-auto">(2,220)</span></a></li>
+                        @endforeach
                     </ul>
                 </div>
             </div>

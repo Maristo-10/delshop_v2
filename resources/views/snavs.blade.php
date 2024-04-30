@@ -44,10 +44,25 @@
 
         <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
-                <a href="#ui-elements" aria-expanded="false" class="nav-link">
+                <a href="#pesanan" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span class="ml-3 item-text">Kelola Pesanan</span>
                 </a>
+                <ul class="collapse list-unstyled pl-4 w-100" id="pesanan">
+                    <li class="nav-item">
+                        <a class="nav-link pl-3" href="/konfirmasi/pesanan"><span class="ml-1 item-text">Konfirmasi Pesanan</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-3" href="/pesanan/diproses"><span class="ml-1 item-text">Pesanan Diproses</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-3" href="/pesanan/selesai"><span class="ml-1 item-text">Pesanan Selesai</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-3" href="/pesanan/dibatalkan"><span class="ml-1 item-text">Pesanan Dibatalkan</span></a>
+                    </li>
+                </ul>
             </li>
         </ul>
 

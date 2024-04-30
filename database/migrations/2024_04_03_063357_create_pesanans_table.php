@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('nama_pengambil')->nullable();
             $table->string('bukti_pembayaran')->nullable();
             $table->float("modal_pesanan")->default(0);
+            $table->string('alasan')->nullable();
             $table->timestamps();
 
             $table->unsignedBigInteger("user_id");

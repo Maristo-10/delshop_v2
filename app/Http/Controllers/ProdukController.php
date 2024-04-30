@@ -7,9 +7,29 @@ use Illuminate\Http\Request;
 use PDO;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\KategoriProdukModel;
 
 class ProdukController extends Controller
 {
+    //Pembeli
+    public function produk(){
+        $produk = Produk::where('status_produk', 'Aktif')->get();
+        $kategori_produk = KategoriProdukModel::where('status_kategori','Aktif')->get();
+        return view('pembeli.produk',[
+            'produk' => $produk,
+            'kategori_produk' =>$kategori_produk
+        ]);
+    }
+
+    public function detailproduk($id){
+        $produk = Produk::where('id_produk', $id)->first();
+        return view('pembeli.detailproduk',[
+            'produk'=>$produk
+        ]);
+    }
+
+
+    //Admin
     public function kelolaproduk(){
         $produk = Produk::all();
         return view('admin.kelolaproduk',[
