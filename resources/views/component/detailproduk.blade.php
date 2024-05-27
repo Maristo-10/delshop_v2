@@ -1,7 +1,7 @@
 @include('navs')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    @if (session('error'))
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+@if (session('error'))
     <script>
         // Tampilkan pesan error dalam pop-up
         Swal.fire({
@@ -58,16 +58,47 @@
                             Large</span>
                     </label>
                 </div> --}}
-                <form action="/tambah/keranjang/{{$produk->id_produk}}" method="POST">
+                <hr>
+                <form action="/tambah/keranjang/{{ $produk->id_produk }}" method="POST">
                     @csrf
-                    <div class="row col-md-12">
+
+                    @if (!empty($variasi_produk))
+                        <input type="hidden" name="jlhV" value="{{ count($variasi_produk) }}">
+                        @php
+                            $ind = 1;
+                        @endphp
+                        @foreach ($variasi_produk as $vp)
+                            <h5 class="mt-3">{{ $vp->nama_variasi }}</h5>
+                            @php
+                                $jenisV = json_decode($vp->variasi, true);
+
+                            @endphp
+                            <div class="row ml-1">
+                                @foreach ($jenisV as $jv)
+                                    <div class="form-check form-check-inline mr-4">
+                                        <input class="form-check-input" type="radio" name="rb_{{ $ind }}"
+                                            id="exampleRadios1" value="{{ $vp->nama_variasi }},{{ $jv }}"
+                                            checked>
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            {{ $jv }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                            @php
+                                $ind++;
+                            @endphp
+                        @endforeach
+                    @endif
+                    <div class="row col-md-12 mt-2">
                         <div class="mb-5 mt-2">
                             <div class="input-group mb-3" style="max-width: 120px;">
                                 <div class="input-group-prepend">
                                     <button class="btn btn-outline-primary js-btn-minus" type="button">&minus;</button>
                                 </div>
                                 <input type="text" class="form-control text-center" value="1" placeholder=""
-                                    aria-label="Example text with button addon" aria-describedby="button-addon1" id="jumlah_pes" name="jumlah_pes">
+                                    aria-label="Example text with button addon" aria-describedby="button-addon1"
+                                    id="jumlah_pes" name="jumlah_pes">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-primary js-btn-plus" type="button">&plus;</button>
                                 </div>
@@ -79,13 +110,55 @@
                         </div>
                     </div>
                     <div class="row col-md-12">
-                        <div class="col-md-6">
-                            <p><button type="submit" class="buy-now btn btn-sm btn-primary">Tambah ke Keranjang</button></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><a href="cart.html" class="buy-now btn btn-sm btn-primary">Beli Sekarang</a></p>
-                        </div>
+                        @if ($produk->role_pembeli == 'Publik')
+                            <div class="col-md-6">
+                                <p><button type="submit" class="buy-now btn btn-sm btn-primary">Tambah ke
+                                        Keranjang</button></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><button type="button" onclick="belisekarang()"
+                                        class="buy-now btn btn-sm btn-primary">Beli Sekarang</button></p>
+                                <input type="hidden" name="idPro" id="idPro" value="{{ $produk->id_produk }}">
+                            </div>
+                        @else
+                            @if (Auth::user()->role_pengguna != $produk->role_pembeli)
+                                <div class="col-md-6">
+                                    <p><button type="submit" class="buy-now btn btn-sm btn-primary" disabled>Tambah ke
+                                            Keranjang</button></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><button type="button" onclick="belisekarang()"
+                                            class="buy-now btn btn-sm btn-primary" disabled>Beli Sekarang</button></p>
+                                    <input type="hidden" name="idPro" id="idPro"
+                                        value="{{ $produk->id_produk }}">
+                                </div>
+                                <div class="col-md-12">
+                                    <span>
+                                        <i class="fa-solid fa-circle-info text-danger"></i><small class="ml-2 text-danger">Produk ini hanya dapat dibeli oleh {{$produk->role_pembeli}}</small>
+                                    </span>
+                                </div>
+                            @else
+                            <div class="col-md-6">
+                                <p><button type="submit" class="buy-now btn btn-sm btn-primary" >Tambah ke
+                                        Keranjang</button></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><button type="button" onclick="belisekarang()"
+                                        class="buy-now btn btn-sm btn-primary" >Beli Sekarang</button></p>
+                                <input type="hidden" name="idPro" id="idPro"
+                                    value="{{ $produk->id_produk }}">
+                            </div>
+                            @endif
+                        @endif
+
                     </div>
+                    <script>
+                        function belisekarang() {
+                            var jlh = document.getElementById('jumlah_pes').value;
+                            var idPro = document.getElementById('idPro').value
+                            window.location.href = '/beli/sekarang/' + idPro + '/' + jlh;
+                        }
+                    </script>
                 </form>
             </div>
         </div>

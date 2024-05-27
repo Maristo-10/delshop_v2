@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('kategoripembayarans', function (Blueprint $table) {
             $table->increments('id_kapem');
             $table->string('kategori_pembayaran');
+            $table->string('status')->default('Aktif');
             $table->timestamps();
         });
     }

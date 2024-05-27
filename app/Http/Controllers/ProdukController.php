@@ -8,12 +8,13 @@ use PDO;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\KategoriProdukModel;
+use App\Models\VariasiProduk;
 
 class ProdukController extends Controller
 {
     //Pembeli
-    public function produk(){
-        $produk = Produk::where('status_produk', 'Aktif')->get();
+    public function produk(Request $request){
+        $produk = Produk::where('status_produk', 'Aktif')->paginate(5);
         $kategori_produk = KategoriProdukModel::where('status_kategori','Aktif')->get();
         return view('pembeli.produk',[
             'produk' => $produk,
@@ -21,10 +22,47 @@ class ProdukController extends Controller
         ]);
     }
 
+    public function produk_kat($kategori){
+        if($kategori == "semua"){
+            $produk = Produk::where('status_produk', 'Aktif')->where('kategori_produk', $kategori)->paginate(1);
+        }elseif($kategori == "terbaru"){
+            $produk = Produk::where('status_produk', 'Aktif')->orderBy('created_at', "DESC")->paginate(2);
+        }elseif($kategori == "terlama"){
+            $produk = Produk::where('status_produk', 'Aktif')->orderBy('created_at', "ASC")->paginate(2);
+        }elseif($kategori == "tertinggi"){
+            $produk = Produk::where('status_produk', 'Aktif')->orderBy('harga', "DESC")->paginate(2);
+        }elseif($kategori == "terendah"){
+            $produk = Produk::where('status_produk', 'Aktif')->orderBy('harga', "ASC")->paginate(2);
+        }else{
+            $produk = Produk::where('status_produk', 'Aktif')->where('kategori_produk', $kategori)->paginate(1);
+        }
+        $kategori_produk = KategoriProdukModel::where('status_kategori','Aktif')->get();
+        return view('pembeli.produk',[
+            'produk' => $produk,
+            'kategori_produk' =>$kategori_produk
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        if ($query == " ") {
+            $produk = Produk::where('status_produk', 'Aktif')->get();
+        } else {
+            $produk = Produk::where('nama_produk', 'like', "%$query%")->get();
+        }
+
+        return response()->json($produk);
+    }
+
+
+
     public function detailproduk($id){
         $produk = Produk::where('id_produk', $id)->first();
+        $variasi_produk = VariasiProduk::where('produk_id', $produk->id_produk)->get();
         return view('pembeli.detailproduk',[
-            'produk'=>$produk
+            'produk'=>$produk,
+            'variasi_produk' => $variasi_produk
         ]);
     }
 
@@ -38,7 +76,10 @@ class ProdukController extends Controller
     }
 
     public function tambahproduk(){
-        return view('admin.tambahproduk');
+        $kategori_produk = KategoriProdukModel::where('status_kategori', 'Aktif')->get();
+        return view('admin.tambahproduk',[
+            'kategori_produk' => $kategori_produk
+        ]);
     }
 
     public function prosestambahproduk(Request $request){
@@ -76,13 +117,29 @@ class ProdukController extends Controller
                 }
             }
         }
+
+        $produk_last = Produk::where('status_produk', "Aktif")->orderBy("created_at", "DESC")->first();
+        $jlhVariasi = $request->idVariasi;
+
+        if($jlhVariasi != NULL){
+            for($i=1; $i<= $jlhVariasi; $i++){
+                $jenis_variasi = json_encode($request["jenis_variasi_".$i]);
+                $variasi = new VariasiProduk();
+                $variasi->nama_variasi = $request["variasi_produk_".$i];
+                $variasi->variasi = $jenis_variasi;
+                $variasi->produk_id = $produk_last->id_produk;
+                $variasi->save();
+            }
+        }
         return redirect()->route("admin.kelolaproduk")->with('success', 'Data Produk Berhasil Di Tambahkan');
     }
 
     public function ubahproduk($id){
         $produk = Produk::where('id_produk', $id)->first();
+        $kategori_produk = KategoriProdukModel::where('status_kategori', 'Aktif')->get();
         return view('admin.ubahproduk',[
-            'produk'=> $produk
+            'produk'=> $produk,
+            'kategori_produk' => $kategori_produk
         ]);
     }
 

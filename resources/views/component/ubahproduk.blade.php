@@ -41,11 +41,9 @@
                         <label for="kategori_produk">Kategori Produk</label>
                         <select class="form-control" id="kategori_produk" name="kategori_produk">
                             <option disabled selected>{{$produk->kategori_produk}}</option>
-                            <option value="Baju">Baju</option>
-                            <option value="Baju">Baju</option>
-                            <option value="Baju">Baju</option>
-                            <option value="Pin">Pin</option>
-                            <option value="Pin">Pin</option>
+                            @foreach ($kategori_produk as $kapro)
+                                <option value="{{$kapro->kategori}}">{{$kapro->kategori}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group mb-3">

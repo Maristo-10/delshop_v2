@@ -6,6 +6,7 @@ use App\Models\KategoriProdukModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use App\Models\Produk;
 
 class Controller extends BaseController
 {
@@ -13,8 +14,10 @@ class Controller extends BaseController
 
     public function dash_pembeli(){
         $kategori_produk = KategoriProdukModel::where('status_kategori','Aktif')->get();
+        $produk_terbaru = Produk::orderBy('created_at', 'desc')->limit(5)->get();
         return view('home.dashboard_pembeli',[
             'kategori_produk' => $kategori_produk,
+            'produk_terbaru' => $produk_terbaru
         ]);
     }
 

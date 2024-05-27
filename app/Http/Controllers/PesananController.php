@@ -2,20 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LaporanPenjualanExport;
+use App\Exports\LaporanLabaRugiExport;
 use App\Models\DetailPesanan;
 use App\Models\Pesanan;
 use App\Models\Produk;
+use App\Models\User;
+use App\Notifications\NewMessageNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PesananController extends Controller
 {
     //pembeli
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function keranjang()
     {
-        $keranjang = Pesanan::where('status', 'Keranjang')->first();
+        $keranjang = Pesanan::where('status', 'Keranjang')->where('user_id', Auth::user()->id)->first();
         $detail_keranjang = DetailPesanan::join('produk', 'produk.id_produk', '=', 'pesanandetails.produk_id')
             ->where('pesanan_id', $keranjang->id)
             ->where('produk.status_produk', 'Aktif')
@@ -33,6 +42,11 @@ class PesananController extends Controller
 
     public function tambahkeranjang(Request $request, $id)
     {
+        for ($i = 1; $i <= $request->jlhV; $i++) {
+            $vari = explode(",", $request['rb_' . $i]);
+            $variasi[] = $vari;
+        }
+        $varPes = json_encode($variasi);
         $produk = Produk::where('id_produk', $id)->first();
         $tanggal = Carbon::now();
         $date = $tanggal->format('Y-m-d');
@@ -43,10 +57,10 @@ class PesananController extends Controller
             return back()->with('error', 'Jumlah Produk Tidak Mencukupi!');
         }
 
-        $cek_keranjang = Pesanan::where('user_id', 1)->where('status', 'Keranjang')->first();
+        $cek_keranjang = Pesanan::where('user_id', Auth::user()->id)->where('status', 'Keranjang')->first();
         if (empty($cek_keranjang)) {
             $keranjang = new Pesanan;
-            $keranjang->user_id = 1;
+            $keranjang->user_id = Auth::user()->id;
             $keranjang->tanggal = $tanggal;
             $keranjang->total_harga = 0;
             $keranjang->save();
@@ -67,6 +81,7 @@ class PesananController extends Controller
             // $pesanan_detail->warn    a_produk = $request->warna;
             // $pesanan_detail->angkatans = $request->angkatan;
             $pesanan_detail->modal_details = $produk->modal * $request->jumlah_pes;
+            $pesanan_detail->variasi_pes = $varPes;
             $pesanan_detail->save();
         }
 
@@ -94,12 +109,9 @@ class PesananController extends Controller
     public function prosescheckout(Request $request)
     {
         $selectedItems = $request->input('selected_items');
+        // dd($selectedItems);
         foreach ($selectedItems as $itemId) {
-            // Lakukan operasi checkout untuk setiap item yang dicentang
             $item[] = DetailPesanan::join('produk', 'produk.id_produk', '=', 'pesanandetails.produk_id')->where('id', $itemId)->where('produk.status_produk', 'Aktif')->first();
-
-            // $item->status = 'checkout';
-            // $item->save();
         }
         return view('pembeli.checkout', [
             'item' => $item
@@ -123,7 +135,7 @@ class PesananController extends Controller
         $checkout = Pesanan::where('id', $pesanan[0]->pesanan_id)->first();
         if (count($keranjang) == count($pesanan)) {
             $checkout->update([
-                'status'=> "Menunggu",
+                'status' => "Menunggu",
                 'kode' => "DEL$now$jumlah_pesanan"
             ]);
             return redirect()->route('pembeli.riwayatpesanan')->with('success', 'Produk telah berhasil dipesan. Menunggu konfirmasi pesanan!');
@@ -147,7 +159,7 @@ class PesananController extends Controller
 
             if (empty($cek_pesanan)) {
                 $pesanan_baru = new Pesanan();
-                $pesanan_baru->user_id = 1;
+                $pesanan_baru->user_id = Auth::user()->id;
                 $pesanan_baru->tanggal = $tanggal;
                 $pesanan_baru->total_harga = 0;
                 $pesanan_baru->status = "Menunggu";
@@ -166,20 +178,50 @@ class PesananController extends Controller
                 ]);
             }
 
+            $notif_admin = 'Pesanan baru dengan Kode Pesanan ' . $cek_pesanan->kode;
+            $notif_pembeli = 'Pesanan anda dengan Kode Pesanan ' . $cek_pesanan->kode . ' Menunggu Konfirmasi';
+            $admin = User::where('role_pengguna', "Admin")->first();
+            $pembeli = User::where('id', Auth::user()->id)->first();
+            $admin->notify(new NewMessageNotification($notif_admin, $cek_pesanan->kode));
+            $pembeli->notify(new NewMessageNotification($notif_pembeli, $cek_pesanan->kode));
+
             return redirect()->route('pembeli.riwayatpesanan')->with('success', 'Produk telah berhasil dipesan. Menunggu konfirmasi pesanan!');
         }
     }
 
-    public function riwayatpesanan(){
-        $pesanan = Pesanan::leftjoin('users', 'users.id','=', 'pesanans.user_id')
-        ->select('pesanans.*', 'users.name')
-        ->where('user_id', 1)->where('status','!=', 'Keranjang')->get();
-        return view('pembeli.riwayatpesanan',[
-            'pesanan'=>$pesanan
+    public function riwayatpesanan()
+    {
+        $pesanan = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('user_id', Auth::user()->id)->where('status', '!=', 'Keranjang')->get();
+
+        $pesanan_menunggu = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('user_id', Auth::user()->id)->where('status', 'Menunggu')->get();
+
+            $pesanan_diproses = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('user_id', Auth::user()->id)->where('status', 'Diproses')->get();
+
+            $pesanan_selesai = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('user_id', Auth::user()->id)->where('status', 'Selesai')->get();
+
+            $pesanan_dibatalkan = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('user_id', Auth::user()->id)->where('status', 'Dibatalkan')->get();
+
+        return view('pembeli.riwayatpesanan', [
+            'pesanan' => $pesanan,
+            'pesanan_dibatalkan'=>$pesanan_dibatalkan,
+            'pesanan_diproses'=>$pesanan_diproses,
+            'pesanan_menunggu'=>$pesanan_menunggu,
+            'pesanan_selesai'=>$pesanan_selesai
         ]);
     }
 
-    public function batalkanpesanan(Request $request, $id){
+    public function batalkanpesanan(Request $request, $id)
+    {
         $pesanan = Pesanan::where('kode', $id)->first();
 
         $pesanan->update([
@@ -189,30 +231,89 @@ class PesananController extends Controller
         return back()->with('success', 'Pesanan berhasil Dibatalkan');
     }
 
-    public function detailpesanan($kode){
+    public function detailpesanan($kode)
+    {
         $pesanan = Pesanan::where('kode', $kode)->first();
-        $detail_pes = DetailPesanan::join('produk','produk.id_produk','=', 'pesanandetails.produk_id')
-        ->where('pesanan_id', $pesanan->id)->select('pesanandetails.*', 'produk.gambar_produk', 'produk.nama_produk')->get();
-        return view('pembeli.detailpesanan',[
+        $detail_pes = DetailPesanan::join('produk', 'produk.id_produk', '=', 'pesanandetails.produk_id')
+            ->where('pesanan_id', $pesanan->id)->select('pesanandetails.*', 'produk.gambar_produk', 'produk.nama_produk')->get();
+        return view('pembeli.detailpesanan', [
             'detail_pes' => $detail_pes,
             'pesanan' => $pesanan
         ]);
     }
 
+    public function belisekarang($id, $jlh)
+    {
+        $produk = Produk::where('id_produk', $id)->first();
 
-    //admin
-
-    public function konfirmasipesanan(){
-        $pesanan = Pesanan::join('users','users.id','=', 'pesanans.user_id')
-        ->select('pesanans.*', 'users.name')
-        ->where('pesanans.status', "Menunggu")
-        ->orderBy('pesanans.tanggal', "DESC")->get();
-        return view('admin.konfirmasipesanan',[
-            'pesanan'=> $pesanan
+        return view('pembeli.checkout', [
+            'produk' => $produk,
+            'jlh' => $jlh
         ]);
     }
 
-    public function proseskonfirmasi($id){
+    public function checkoutsekarangproduk(Request $request)
+    {
+        $tanggal = Carbon::now();
+        $date = $tanggal->format('Y-m-d');
+        $jumlah_pesanan = Pesanan::where('tanggal', $date)->count();
+        $now = $tanggal->format('Ymd');
+
+        $produk = Produk::where('id_produk', $request->idPro)->first();
+        $user = User::where('id', Auth::user()->id)->first();
+
+        $pesanan = new Pesanan;
+        $pesanan->user_id = Auth::user()->id;
+        $pesanan->tanggal = $tanggal;
+        $pesanan->total_harga = $produk->harga * $request->jlh_pesanan;
+        $pesanan->modal_pesanan =  $produk->modal * $request->jlh_pesanan;
+        $pesanan->nama_pengambil = $user->name;
+        $pesanan->status = "Menunggu";
+        $pesanan->save();
+
+        $pesanan_new = Pesanan::orderBy('id', 'DESC')->first();
+        $kode = "DEL$now$jumlah_pesanan";
+
+        $pesanan_new->update([
+            'kode' => $kode
+        ]);
+
+        $pesanan_detail = new DetailPesanan();
+        $pesanan_detail->jumlah = $request->jlh_pesanan;
+        $pesanan_detail->jumlah_harga = $produk->harga * $request->jlh_pesanan;
+        $pesanan_detail->modal_details = $produk->modal * $request->jlh_pesanan;
+        $pesanan_detail->produk_id = $produk->id_produk;
+        $pesanan_detail->pesanan_id = $pesanan_new->id;
+        $pesanan_detail->save();
+
+        $cek_pesanan = Pesanan::where('kode', $kode)->first();
+
+        $notif_admin = 'Pesanan baru dengan Kode Pesanan ' . $cek_pesanan->kode;
+        $notif_pembeli = 'Pesanan anda dengan Kode Pesanan ' . $cek_pesanan->kode . ' Menunggu Konfirmasi';
+        $admin = User::where('role_pengguna', "Admin")->first();
+        $pembeli = User::where('id', Auth::user()->id)->first();
+        $admin->notify(new NewMessageNotification($notif_admin, $cek_pesanan->kode));
+        $pembeli->notify(new NewMessageNotification($notif_pembeli, $cek_pesanan->kode));
+
+        return redirect()->route('pembeli.riwayatpesanan')->with('success', 'Produk telah berhasil dipesan. Menunggu konfirmasi pesanan!');
+    }
+
+
+    //admin
+
+    public function konfirmasipesanan()
+    {
+        $pesanan = Pesanan::join('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('pesanans.status', "Menunggu")
+            ->orderBy('pesanans.tanggal', "DESC")->get();
+        return view('admin.konfirmasipesanan', [
+            'pesanan' => $pesanan
+        ]);
+    }
+
+    public function proseskonfirmasi($id)
+    {
         $proseskonfirmasi = Pesanan::where('kode', $id)->first();
         $proseskonfirmasi->update([
             'status' => "Diproses"
@@ -221,7 +322,8 @@ class PesananController extends Controller
         return back()->with('success', 'Pesanan berhasil Dikonfirmasi. Pesanan Sedang Diproses');
     }
 
-    public function pembatalan(Request $request, $id){
+    public function pembatalan(Request $request, $id)
+    {
         $pesanan =  Pesanan::where('kode', $id)->first();
         $pesanan->update([
             'alasan' => $request->alasan,
@@ -231,17 +333,19 @@ class PesananController extends Controller
         return back()->with('success', 'Pesanan berhasil Dibatalkan');
     }
 
-    public function pesanandiproses(){
-        $pesanan = Pesanan::join('users','users.id','=', 'pesanans.user_id')
-        ->select('pesanans.*', 'users.name')
-        ->where('pesanans.status', "Diproses")
-        ->orderBy('pesanans.tanggal', "DESC")->get();
-        return view('admin.pesanandiproses',[
-            'pesanan'=>$pesanan
+    public function pesanandiproses()
+    {
+        $pesanan = Pesanan::join('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('pesanans.status', "Diproses")
+            ->orderBy('pesanans.tanggal', "DESC")->get();
+        return view('admin.pesanandiproses', [
+            'pesanan' => $pesanan
         ]);
     }
 
-    public function prosesselesai($id){
+    public function prosesselesai($id)
+    {
         $proseskonfirmasi = Pesanan::where('kode', $id)->first();
         $proseskonfirmasi->update([
             'status' => "Selesai"
@@ -250,24 +354,91 @@ class PesananController extends Controller
         return back()->with('success', 'Pesanan telah Diambil. Pesanan Selesai');
     }
 
-    public function pesananselesai(){
-        $pesanan = Pesanan::join('users','users.id','=', 'pesanans.user_id')
-        ->select('pesanans.*', 'users.name')
-        ->where('pesanans.status', "Selesai")
-        ->orderBy('pesanans.tanggal', "DESC")->get();
-        return view('admin.pesananselesai',[
+    public function pesananselesai()
+    {
+        $pesanan = Pesanan::join('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('pesanans.status', "Selesai")
+            ->orderBy('pesanans.tanggal', "DESC")->get();
+        return view('admin.pesananselesai', [
             'pesanan' => $pesanan
         ]);
     }
 
-    public function pesanandibatalkan(){
-        $pesanan = Pesanan::join('users','users.id','=', 'pesanans.user_id')
-        ->select('pesanans.*', 'users.name')
-        ->where('pesanans.status', "Dibatalkan")
-        ->orderBy('pesanans.tanggal', "DESC")->get();
-        return view('admin.pesanandibatalkan',[
+    public function pesanandibatalkan()
+    {
+        $pesanan = Pesanan::join('users', 'users.id', '=', 'pesanans.user_id')
+            ->select('pesanans.*', 'users.name')
+            ->where('pesanans.status', "Dibatalkan")
+            ->orderBy('pesanans.tanggal', "DESC")->get();
+        return view('admin.pesanandibatalkan', [
             'pesanan' => $pesanan
         ]);
     }
 
+    public function laporanpenjualan(Request $request)
+    {
+        $tgl_awal = $request->tanggal_awal;
+        $tgl_akhir = $request->tanggal_akhir;
+
+        if ($tgl_awal != null && $tgl_akhir != null) {
+            $pesanan = Pesanan::whereBetween('tanggal', [$tgl_awal, $tgl_akhir])->where('status', "Selesai")->get();
+        }
+
+        if ($tgl_akhir == null || $tgl_awal == null) {
+            $pesanan = 0;
+        }
+        return view('admin.laporanpenjualan', [
+            'pesanan' => $pesanan,
+            'tgl_awal' => $tgl_awal,
+            'tgl_akhir' => $tgl_akhir
+        ]);
+    }
+
+    public function exportlaporanpenjualan(Request $request)
+    {
+        $awal = $request->awal;
+        $akhir = $request->akhir;
+
+        $tglMin = Carbon::createFromDate($awal)->format('d M Y');
+        $tglMax = Carbon::createFromDate($akhir)->format('d M Y');
+
+        return Excel::download(new LaporanPenjualanExport($awal, $akhir), "Data Laporan Penjualan " . $tglMin . " - " . $tglMax . ".xlsx");
+    }
+
+    public function laporanlabarugi(Request $request)
+    {
+        $tgl_awal = $request->tanggal_awal;
+        $tgl_akhir = $request->tanggal_akhir;
+
+        if ($tgl_awal != null && $tgl_akhir != null) {
+            $detailpes = Pesanan::join('pesanandetails', 'pesanandetails.pesanan_id', '=', 'pesanans.id')->whereBetween('pesanans.tanggal', [$tgl_awal, $tgl_akhir])->where('pesanans.status', "Selesai")->get();
+            foreach ($detailpes as $detail) {
+                $idProduk[] = $detail->produk_id;
+            }
+
+            $penjualan = Produk::whereIn('id_produk', $idProduk)->get();
+        }
+
+        if ($tgl_akhir == null || $tgl_awal == null) {
+            $penjualan = 0;
+        }
+
+        return view('admin.laporanlabarugi', [
+            'penjualan' => $penjualan,
+            'tgl_awal' => $tgl_awal,
+            'tgl_akhir' => $tgl_akhir
+        ]);
+    }
+
+    public function exportlaporanlabarugi(Request $request)
+    {
+        $awal = $request->awal;
+        $akhir = $request->akhir;
+
+        $tglMin = Carbon::createFromDate($awal)->format('d M Y');
+        $tglMax = Carbon::createFromDate($akhir)->format('d M Y');
+
+        return Excel::download(new LaporanLabaRugiExport($awal, $akhir), "Data Laporan Laba Rugi " . $tglMin . " - " . $tglMax . ".xlsx");
+    }
 }

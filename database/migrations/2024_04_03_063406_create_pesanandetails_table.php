@@ -18,8 +18,9 @@ return new class extends Migration
             $table->float("modal_details")->default(0);
             $table->timestamps();
 
-            $table->unsignedBigInteger('produk_id');
+            $table->unsignedBigInteger('produk_id');    
             $table->unsignedBigInteger('pesanan_id');
+            $table->json("variasi_pes")->nullable();
             $table->string("ukurans")->nullable();
             $table->string("warna_produk")->nullable();
             $table->string("angkatans")->nullable();

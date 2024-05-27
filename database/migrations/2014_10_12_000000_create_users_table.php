@@ -30,6 +30,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->string("role_pengguna")->default('Publik');
+            $table->string('bukti')->nullable();
         });
     }
 

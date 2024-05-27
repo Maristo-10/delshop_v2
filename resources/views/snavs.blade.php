@@ -46,7 +46,7 @@
             <li class="nav-item dropdown">
                 <a href="#pesanan" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="ml-3 item-text">Kelola Pesanan</span>
+                    <span class="ml-3 item-text">Manajemen Pesanan</span>
                 </a>
                 <ul class="collapse list-unstyled pl-4 w-100" id="pesanan">
                     <li class="nav-item">
@@ -68,10 +68,20 @@
 
         <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
-                <a href="#ui-elements" aria-expanded="false" class="nav-link">
+                <a href="#metodepembayaran" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
                     <i class="fa-solid fa-money-check"></i>
-                    <span class="ml-3 item-text">Kelola Metode Pembayaran</span>
+                    <span class="ml-3 item-text">Manajemen Pembayaran</span>
                 </a>
+                <ul class="collapse list-unstyled pl-4 w-100" id="metodepembayaran">
+                    <li class="nav-item">
+                        <a class="nav-link pl-3" href="/metode/pembayaran"><span class="ml-1 item-text">Metode Pembayaran</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link pl-3" href="/kategori/pembayaran"><span class="ml-1 item-text">Kategori Pembayaran</span></a>
+                    </li>
+                    </li>
+                </ul>
             </li>
         </ul>
 
@@ -83,11 +93,11 @@
                 </a>
                 <ul class="collapse list-unstyled pl-4 w-100" id="laporan">
                     <li class="nav-item">
-                        <a class="nav-link pl-3" href="./ui-color.html"><span class="ml-1 item-text">Laporan Penjualan</span>
+                        <a class="nav-link pl-3" href="/laporan/penjualan"><span class="ml-1 item-text">Laporan Penjualan</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link pl-3" href="./ui-typograpy.html"><span class="ml-1 item-text">Laporan Laba Rugi</span></a>
+                        <a class="nav-link pl-3" href="/laporan/labarugi"><span class="ml-1 item-text">Laporan Laba Rugi</span></a>
                     </li>
                 </ul>
             </li>
@@ -101,12 +111,9 @@
                 </a>
                 <ul class="collapse list-unstyled pl-4 w-100" id="pengguna">
                     <li class="nav-item">
-                        <a class="nav-link pl-3" href="./ui-color.html"><span class="ml-1 item-text">Kelola
+                        <a class="nav-link pl-3" href="/kelola/pengguna"><span class="ml-1 item-text">Kelola
                                 Pengguna</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" href="./ui-typograpy.html"><span class="ml-1 item-text">Kelola Role Pengguna</span></a>
                     </li>
                 </ul>
             </li>
@@ -114,7 +121,7 @@
 
         <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
-                <a href="#ui-elements" aria-expanded="false" class="nav-link">
+                <a href="/kelola/corousel" aria-expanded="false" class="nav-link">
                     <i class="fa-solid fa-images"></i>
                     <span class="ml-3 item-text">Kelola Corousel</span>
                 </a>

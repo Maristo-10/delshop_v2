@@ -8,7 +8,9 @@
 
     <link rel="stylesheet" href="{{ asset('https://fonts.googleapis.com/css?family=Mukta:300,400,700') }}">
     <link rel="stylesheet" href="{{ asset('pembeli/fonts/icomoon/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css') }}" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="{{ asset('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css') }}"
+        crossorigin="anonymous">
 
 
     <link rel="stylesheet" href="{{ asset('pembeli/css/bootstrap.min.css') }}">
@@ -21,6 +23,7 @@
     <link rel="stylesheet" href="{{ asset('pembeli/css/aos.css') }}">
 
     <link rel="stylesheet" href="{{ asset('pembeli/css/style.css') }}">
+
 
 </head>
 
@@ -43,32 +46,142 @@
                                 </nav>
                             </div>
                         </div>
-                        <div class="col-6 mb-md-0 col-md-3 order-2 order-md-2 site-search-icon text-left">
-                            <form action="" class="site-block-top-search">
-                                <span class="icon icon-search2"></span>
-                                <input type="text" class="form-control border-0" placeholder="Search">
-                            </form>
-                        </div>
+                        @php
+                            use Illuminate\Support\Facades\Route;
+                            use Illuminate\Support\Facades\Auth;
+                        @endphp
 
+                        @if (Route::currentRouteName() === 'pembeli.produk')
+                            <div class="col-6 mb-md-0 col-md-3 order-2 order-md-2 site-search-icon text-left">
+                                <form action="" class="site-block-top-search">
+                                    <span class="icon icon-search2"></span>
+                                    <input type="text" name="search_produk" id="search_produk"
+                                        class="form-control border-0" placeholder="Search">
+                                </form>
+                            </div>
+                        @endif
+                        @if (Route::currentRouteName() != 'pembeli.produk')
+                            <div class="col-6 mb-md-0 col-md-3 order-2 order-md-2 site-search-icon text-left">
+                            </div>
+                        @endif
                         <div class="col-3 col-md-4 order-4 order-md-3 text-right">
                             <div class="site-top-icons">
-                                <ul>
-                                    <li><a href="#"><span class="icon icon-bell"></span></a></li>
-                                    <li>
-                                        <a href="/keranjang" class="site-cart">
-                                            <span class="icon icon-shopping_cart"></span>
-                                            <span class="count">2</span>
+                                @guest
+                                    <ul>
+                                        <a href="javascript:void(0);" id="notificationButton">
+                                            <span class="icon icon-bell"></span>
                                         </a>
-                                    </li>
-                                    <li class="d-inline-block d-md-none ml-md-0"><a href="#"
-                                            class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a>
-                                    </li>
-                                    <li><a href="#"><span class="icon icon-person"></span><span class="ml-2"
-                                                style="vertical-align: super">Mario Tangkas</span></a></li>
-                                </ul>
+                                        <li>
+                                            <a href="/" class="site-cart">
+                                                <span class="icon icon-shopping_cart"></span>
+                                                <span class="count">0<span>
+                                            </a>
+                                        </li>
+                                        <li class="d-inline-block d-md-none ml-md-0"><a href="#"
+                                                class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a>
+                                        </li>
+                                        <li class="pl-2 pt-2 pb-2">
+                                            <a href="{{ route('login') }}" class="" id="dropdownMenuLink">
+                                                <span class="text-white btn btn-primary btn-sm"
+                                                    style="vertical-align: super; font-weight:bold">Masuk</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                @else
+                                    <ul>
+                                        <li class="mr-2"><a href="javascript:;" class="nav-link p-0 site-cart"
+                                                id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false"><span
+                                                    class="icon icon-bell"></span>
+                                                <span
+                                                    class="count">{{ auth()->user()->unreadNotifications->count() }}</span></a>
+                                            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4 scrollable-list"
+                                                aria-labelledby="dropdownMenuButton"
+                                                style="max-height: 300px;min-width: 480px; overflow-y:auto; top:0rem !important;right: 1.0rem !important">
+                                                <span class="text-dark text-lg ml-3"
+                                                    style="margin-bottom: 50%; font-weight:bold">Notifikasi!</span><br>
+                                                @if (auth()->user()->unreadNotifications->count() == 0)
+                                                    <a class="dropdown-item border-radius-md mt-3" href="javascript:;"
+                                                        style="background-color: #F5F7F8">
+                                                        <div class="d-flex py-1">
+                                                            <div class="d-flex flex-column justify-content-center">
+                                                                <h6 class="text-sm font-weight-normal mb-1">
+                                                                    <small class="font-weight-bold text-danger"
+                                                                        style="font-style: italic">
+                                                                        Pesan Notifikasi Masih Kosong</small>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                @else
+                                                    @foreach (auth()->user()->unreadNotifications as $notification)
+                                                        <li class="mb-1 mt-1">
+                                                            <a class="notification-link dropdown-item border-radius-md"
+                                                                href="{{ route('read.notification', ['id' => $notification->id]) }}"
+                                                                data-notification-id="{{ $notification->id }}">
+                                                                <div class="d-flex flex-column justify-content-center">
+                                                                    <small class="text-xs">
+                                                                        <span
+                                                                            class="font-weight-bold">{{ $notification->data['data'] }}</span>
+                                                                    </small>
+                                                                    <small class="text-xs text-secondary mb-0">
+                                                                        <i class="fa fa-clock fa-xs me-1"></i>
+                                                                        {{ $notification->created_at->diffForHumans() }}
+                                                                    </small>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                @endif
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            @php
+                                                $jlhKeranjang = App\Models\DetailPesanan::join(
+                                                    'pesanans',
+                                                    'pesanans.id',
+                                                    '=',
+                                                    'pesanandetails.id',
+                                                )
+                                                    ->where('pesanans.user_id', Auth::user()->id)
+                                                    ->count();
+                                            @endphp
+                                            @if ($jlhKeranjang == 0)
+                                                <a href="" class="site-cart">
+                                                @else
+                                                    <a href="/keranjang" class="site-cart">
+                                            @endif
+                                            <span class="icon icon-shopping_cart"></span>
+                                            <span class="count">{{ $jlhKeranjang }}</span>
+                                            </a>
+                                        </li>
+                                        {{-- <li class="d-inline-block d-md-none ml-md-0"><a href="#"
+                                                class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a>
+                                        </li> --}}
+                                        <li class="dropdown pl-3">
+                                            <a href="#" class="" id="dropdownMenuLink"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <img src="{{ asset('/user-images/profile.png') }}" alt="Profile"
+                                                    class="rounded-circle border mb-3" style="width: 35px; height:35px">
+                                                <span class="ml-1"
+                                                    style="vertical-align: super">{{ Auth::user()->name }}</span>
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <a class="dropdown-item" href="/profile">Profil Saya</a>
+                                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                                    onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();">Keluar
+                                                </a>
+                                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                    class="d-none">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                @endguest
                             </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -111,15 +224,13 @@
                         <h4 class="footer-heading mb-4 text-white">Menu</h4>
                         <div class="row col-md-12">
                             <ul class="list-unstyled text-white">
-                                <li><a class="text-white" href="#"><span
+                                <li><a class="text-white" href="/"><span
                                             class="icon icon-angle-right mr-1 fw-bold"></span>Beranda</a></li>
-                                <li><a class="text-white" href="#"><span
+                                <li><a class="text-white" href="/produk"><span
                                             class="icon icon-angle-right mr-1 fw-bold"></span>Produk</a></li>
-                                <li><a class="text-white" href="#"><span
+                                <li><a class="text-white" href="/riwayat-pesanan"><span
                                             class="icon icon-angle-right mr-1 fw-bold"></span>Pesanan</a></li>
-                                <li><a class="text-white" href="#"><span
-                                            class="icon icon-angle-right mr-1 fw-bold"></span>Keranjang</a></li>
-                                <li><a class="text-white" href="#"><span
+                                <li><a class="text-white" href="/profile"><span
                                             class="icon icon-angle-right mr-1 fw-bold"></span>Profil</a></li>
                             </ul>
                         </div>
@@ -128,10 +239,10 @@
                         <h4 class="footer-heading mb-4 text-white">Partner Delshop</h4>
                         <div class="row col-md-12">
                             <ul class="list-unstyled text-white">
-                                <li><a class="text-white" href="#"><span
+                                <li><a class="text-white" href="https://www.del.ac.id/"><span
                                             class="icon icon-angle-right mr-1 fw-bold"></span>Institut Teknologi
                                         Del</a></li>
-                                <li><a class="text-white" href="#"><span
+                                <li><a class="text-white" href="/"><span
                                             class="icon icon-angle-right mr-1 fw-bold"></span>Yayasan Del</a></li>
                             </ul>
                         </div>
@@ -139,11 +250,11 @@
                 </div>
                 <div class="row pt-5 mt-1 text-center">
                     <div class="col-md-12">
-                      <h6 class="text-white">
-                      ©Delshop. All Rights Reserved
-                      </h6>
+                        <h6 class="text-white">
+                            ©Delshop. All Rights Reserved
+                        </h6>
                     </div>
-                  </div>
+                </div>
             </div>
         </footer>
     </div>

@@ -1,9 +1,6 @@
 @extends('home')
 
 @section('content')
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <style>
         /* CSS untuk mengubah warna ikon */
         .carousel-control-prev-icon {
@@ -42,43 +39,6 @@
         });
     </script>
 
-    {{-- <div class="site-section site-section-sm site-blocks-1">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="">
-                    <div class="icon mr-4 align-self-start">
-                        <span class="icon-truck"></span>
-                    </div>
-                    <div class="text">
-                        <h2 class="text-uppercase">Free Shipping</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer
-                            accumsan tincidunt fringilla.</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="icon mr-4 align-self-start">
-                        <span class="icon-refresh2"></span>
-                    </div>
-                    <div class="text">
-                        <h2 class="text-uppercase">Free Returns</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer
-                            accumsan tincidunt fringilla.</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="icon mr-4 align-self-start">
-                        <span class="icon-help"></span>
-                    </div>
-                    <div class="text">
-                        <h2 class="text-uppercase">Customer Support</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus at iaculis quam. Integer
-                            accumsan tincidunt fringilla.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
     <div class="site-section site-blocks-2">
         <div class="container">
             <div class="row">
@@ -88,13 +48,14 @@
                 <div class="row col-md-12 justify-content-center">
                     @foreach ($kategori_produk as $katpro)
                         <div class="col-sm-6 col-md-6 col-lg-2 mb-4 mb-lg-0">
-                            <a class="block-2-item" href="#">
+                            <a class="block-2-item" href="/produk/{{ $katpro->kategori }}">
                                 <figure class="image">
-                                    <img src="/kategori-produk-images/{{$katpro->gambar_kategori}}" alt="" class="img-fluid w-100" style="min-height: 150px">
+                                    <img src="/kategori-produk-images/{{ $katpro->gambar_kategori }}" alt=""
+                                        class="img-fluid w-100" style="min-height: 150px">
                                 </figure>
                                 <div class="text">
                                     <span class="text-uppercase">kategori</span>
-                                    <h6>{{$katpro->kategori}}</h6>
+                                    <h6 class="text-white">{{ $katpro->kategori }}</h6>
                                 </div>
                             </a>
                         </div>
@@ -131,60 +92,37 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-7 site-section-heading text-center pt-4">
-                    <h2>Rekomendasi Produk</h2>
+                    <h2>Produk Terbaru</h2>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="nonloop-block-3 owl-carousel">
-                        <div class="item col-10">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="pembeli/images/cloth_1.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">Tank Top</a></h3>
-                                    <p class="mb-0">Rp. 100.000</p>
-                                    <p class="text-primary font-weight-bold">Belum Terjual</p>
+                        @foreach ($produk_terbaru as $terbaru)
+                        @php
+                            $jumlahTerjual = App\Models\DetailPesanan::join('pesanans','pesanans.id','=', 'pesanandetails.pesanan_id')->where('pesanandetails.produk_id', $terbaru->id_produk)->where('pesanans.status', 'Selesai')->get();
+
+                            $jlhterjual =0;
+                            foreach ($jumlahTerjual as $terjual) {
+                                $jlhterjual += $terjual->jumlah;
+                            }
+                        @endphp
+                            <div class="item col-10">
+                                <div class="block-4 text-center">
+                                    <figure class="block-4-image">
+                                        <img src="/product-images/{{$terbaru->gambar_produk}}" alt="Image placeholder" class="img-fluid" style="min-height: 250px; max-height: 250px">
+                                    </figure>
+                                    <div class="block-4-text p-4">
+                                        <h6><a href="#">{{$terbaru->nama_produk}}</a></h6>
+                                        <p class="mb-0">Rp. <?php
+                                            echo number_format($terbaru->harga, 0, ',', '.');
+                                            ?></p>
+                                        <p class="text-primary font-weight-bold">{{$jlhterjual}} Terjual</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="item col-10">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="pembeli/images/cloth_1.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">Tank Top</a></h3>
-                                    <p class="mb-0">Rp. 100.000</p>
-                                    <p class="text-primary font-weight-bold">Belum Terjual</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item col-10">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="pembeli/images/cloth_1.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">Tank Top</a></h3>
-                                    <p class="mb-0">Rp. 100.000</p>
-                                    <p class="text-primary font-weight-bold">Belum Terjual</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item col-10">
-                            <div class="block-4 text-center">
-                                <figure class="block-4-image">
-                                    <img src="pembeli/images/cloth_1.jpg" alt="Image placeholder" class="img-fluid">
-                                </figure>
-                                <div class="block-4-text p-4">
-                                    <h3><a href="#">Tank Top</a></h3>
-                                    <p class="mb-0">Rp. 100.000</p>
-                                    <p class="text-primary font-weight-bold">Belum Terjual</p>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
+
                     </div>
                 </div>
             </div>

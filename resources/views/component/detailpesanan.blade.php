@@ -3,18 +3,40 @@
     <div class="container pl-5" style="max-width: 1300px">
         <div class="row mb-5">
             <div class="col-lg-12">
-                <div class="col-lg-12 p-2" style="background-color: #00337C !important; border-radius:7px">
+                @if ($pesanan->status == 'Menunggu')
+                <div class="col-lg-12 p-2 bg-warning" style="border-radius:7px">
+                    @endif
+                    @if ($pesanan->status == 'Diproses')
+                <div class="col-lg-12 p-2 bg-info" style="border-radius:7px">
+                    @endif
                     <div class="row">
                         <div class="col-lg-1" style="align-self: center;text-align-last:center">
-                            <i class="fa-solid fa-stopwatch" style="font-size: xxx-large;color:white"></i>
+                            @if ($pesanan->status == 'Menunggu')
+                                <i class="fa-solid fa-stopwatch" style="font-size: xxx-large;color:black"></i>
+                            @endif
+                            @if ($pesanan->status == 'Diproses')
+                                <i class="fa-solid fa-spinner" style="font-size: xxx-large;color:white"></i>
+                            @endif
+
                         </div>
                         <div class="col-lg-9">
                             <div class="col-12">
-                                <h5 class="text-light">Menunggu Pesanan Dikonfirmasi</h5>
+                                @if ($pesanan->status == 'Menunggu')
+                                    <h5 class="text-light">Menunggu Pesanan Dikonfirmasi</h5>
+                                @endif
+                                @if ($pesanan->status == 'Diproses')
+                                    <h5 class="text-light">Pesanan Sedang Diproses</h5>
+                                @endif
                             </div>
                             <div class="col-lg-12">
+                                @if ($pesanan->status == 'Menunggu')
                                 <h6 class="text-light">Pesanan dalam antrian konfirmasi, mohon menunggu. </h6>
                                 <h6 class="text-light">Terimakasih!</h6>
+                                @endif
+                                @if ($pesanan->status == 'Diproses')
+                                <h6 class="text-light">Pesanan sedang diproses oleh Petugas, mohon menunggu. </h6>
+                                <h6 class="text-light">Terimakasih!</h6>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -62,18 +84,19 @@
                     <div class="col-lg-12 p-2" style="border: solid 2px; border-radius:5px">
                         <div class="row p-3">
                             <div class="col-lg-2" style="text-align: center">
-                                <img src="/product-images/{{$det->gambar_produk}}" alt="" style="max-height: 100px; min-height: 100px; max-width : 150px">
+                                <img src="/product-images/{{ $det->gambar_produk }}" alt=""
+                                    style="max-height: 100px; min-height: 100px; max-width : 150px">
                             </div>
                             <div class="col-lg-6" style="place-self: center">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <span class="text-dark" style="font-weight: bold">{{$det->nama_produk}}</span>
+                                        <span class="text-dark" style="font-weight: bold">{{ $det->nama_produk }}</span>
                                     </div>
                                     <div class="col-sm-12">
                                         <span class="text-dark">Variasi : </span>
                                     </div>
                                     <div class="col-sm-12">
-                                        <span class="text-dark">Jumlah Produk : {{$det->jumlah}}</span>
+                                        <span class="text-dark">Jumlah Produk : {{ $det->jumlah }}</span>
                                     </div>
                                 </div>
                             </div>

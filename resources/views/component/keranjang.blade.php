@@ -63,10 +63,11 @@
                             <div class="row p-4">
                                 <div class="col-lg-1" style="place-self: center">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input text-white" id="check2-{{$no++}}"
-                                            name="selected_items[]" value="{{$detail->id}}">
+                                        <input type="checkbox" class="custom-control-input text-white"
+                                            id="check2-{{ $no++ }}" name="selected_items[]"
+                                            value="{{ $detail->id }}">
                                         <label class="custom-control-label text-dark p-2" style="font-weight: bold"
-                                            for="check2-{{$no2++}}"></label>
+                                            for="check2-{{ $no2++ }}"></label>
                                     </div>
                                 </div>
                                 <div class="col-lg-2" style="place-self: center">
@@ -78,8 +79,18 @@
                                         <div class="col-sm-12">
                                             <span class="text-dark">{{ $detail->nama_produk }}</span>
                                         </div>
+                                        @php
+                                            $varPesanan = json_decode($detail->variasi_pes, true);
+                                            $j = 0;
+                                        @endphp
                                         <div class="col-sm-12">
-                                            <span class="text-dark">Variasi : </span>
+                                            <span class="text-dark">Variasi :</span>
+                                            @for ($i = 0; $i < count($varPesanan); $i++)
+                                                <span class="text-dark">{{ $varPesanan[$i][1] }}</span>
+                                                @if ($i < count($varPesanan) - 1)
+                                                    ,
+                                                @endif
+                                            @endfor
                                         </div>
                                         <div class="col-sm-12">
                                             <span class="text-dark" style="font-weight: bold">Rp.
@@ -143,7 +154,8 @@
                         </div>
                         <hr class="pr-5" color="black" size="5" width="75%">
                         <div class="col-lg-12 pt-2" style="text-align-last:center">
-                            <p><button type="submit" class="buy-now btn btn-sm btn-primary">Lanjutkan Pemesanan</button></p>
+                            <p><button type="submit" class="buy-now btn btn-sm btn-primary">Lanjutkan
+                                    Pemesanan</button></p>
                         </div>
                     </div>
                 </div>

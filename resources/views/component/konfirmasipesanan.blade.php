@@ -96,7 +96,8 @@
                                 aria-labelledby="defaultModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-md" role="document">
                                     <div class="modal-content">
-                                        <form action="/pembatalan/pesanan/{{$pes->kode}}" method="POST" name="form-cancel" id="form-cancel">
+                                        <form action="/pembatalan/pesanan/{{ $pes->kode }}" method="POST"
+                                            name="form-cancel" id="form-cancel">
                                             @csrf
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="defaultModalLabel">Konfirmasi Pembatalan
@@ -119,7 +120,8 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn mb-2 btn-secondary"
                                                     data-dismiss="modal">Tutup</button>
-                                                <button type="button" onclick="canPes()" class="btn mb-2 btn-danger">Batalkan Pesanan</button>
+                                                <button type="button" onclick="canPes()"
+                                                    class="btn mb-2 btn-danger">Batalkan Pesanan</button>
                                             </div>
                                             <script>
                                                 function canPes() {
@@ -255,14 +257,25 @@
                                                                             <div class="col-lg-8">
                                                                                 <div class="row">
                                                                                     <div class="col-lg-12">
-                                                                                        <div class="row">
-                                                                                            <div class="col-lg-6">
+                                                                                        @php
+                                                                                            $varPesanan = json_decode(
+                                                                                                $det->variasi_pes,
+                                                                                                true,
+                                                                                            );
+                                                                                            $j = 0;
+                                                                                        @endphp
+                                                                                        <div class="col-lg-12">
+                                                                                            <div class="row">
                                                                                                 <small
-                                                                                                    style="font-weight: bold">Nama
-                                                                                                    Produk</small>
-                                                                                            </div>
-                                                                                            <div class="col-lg-5">
-                                                                                                <small>{{ $det->nama_produk }}</small>
+                                                                                                    style="font-weight: bold">{{ $det->nama_produk }}</small><br>
+                                                                                                @if (!empty($varPesanan))
+                                                                                                    @for ($i = 0; $i < count($varPesanan); $i++)
+                                                                                                        <small>{{ $varPesanan[$i][1] }}</small>
+                                                                                                        @if ($i < count($varPesanan) - 1)
+                                                                                                            ,
+                                                                                                        @endif
+                                                                                                    @endfor
+                                                                                                @endif
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
