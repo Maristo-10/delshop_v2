@@ -1,1 +1,0 @@
-# delshop_v2
