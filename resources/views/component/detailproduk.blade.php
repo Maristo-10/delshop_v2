@@ -66,6 +66,7 @@
                         <input type="hidden" name="jlhV" value="{{ count($variasi_produk) }}">
                         @php
                             $ind = 1;
+                            $jlhVariasi = $variasi_produk->count();
                         @endphp
                         @foreach ($variasi_produk as $vp)
                             <h5 class="mt-3">{{ $vp->nama_variasi }}</h5>
@@ -110,7 +111,7 @@
                         </div>
                     </div>
                     <div class="row col-md-12">
-                        @if ($produk->role_pembeli == 'Publik')
+                        @guest
                             <div class="col-md-6">
                                 <p><button type="submit" class="buy-now btn btn-sm btn-primary">Tambah ke
                                         Keranjang</button></p>
@@ -121,42 +122,73 @@
                                 <input type="hidden" name="idPro" id="idPro" value="{{ $produk->id_produk }}">
                             </div>
                         @else
-                            @if (Auth::user()->role_pengguna != $produk->role_pembeli)
+                            @if ($produk->role_pembeli == 'Publik')
                                 <div class="col-md-6">
-                                    <p><button type="submit" class="buy-now btn btn-sm btn-primary" disabled>Tambah ke
+                                    <p><button type="submit" class="buy-now btn btn-sm btn-primary">Tambah ke
                                             Keranjang</button></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p><button type="button" onclick="belisekarang()"
-                                            class="buy-now btn btn-sm btn-primary" disabled>Beli Sekarang</button></p>
-                                    <input type="hidden" name="idPro" id="idPro"
-                                        value="{{ $produk->id_produk }}">
-                                </div>
-                                <div class="col-md-12">
-                                    <span>
-                                        <i class="fa-solid fa-circle-info text-danger"></i><small class="ml-2 text-danger">Produk ini hanya dapat dibeli oleh {{$produk->role_pembeli}}</small>
-                                    </span>
+                                            class="buy-now btn btn-sm btn-primary">Beli Sekarang</button></p>
+                                    <input type="hidden" name="idPro" id="idPro" value="{{ $produk->id_produk }}">
                                 </div>
                             @else
-                            <div class="col-md-6">
-                                <p><button type="submit" class="buy-now btn btn-sm btn-primary" >Tambah ke
-                                        Keranjang</button></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><button type="button" onclick="belisekarang()"
-                                        class="buy-now btn btn-sm btn-primary" >Beli Sekarang</button></p>
-                                <input type="hidden" name="idPro" id="idPro"
-                                    value="{{ $produk->id_produk }}">
-                            </div>
+                                @if (Auth::user()->role_pengguna != $produk->role_pembeli)
+                                    <div class="col-md-6">
+                                        <p><button type="submit" class="buy-now btn btn-sm btn-primary" disabled>Tambah ke
+                                                Keranjang</button></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><button type="button" onclick="belisekarang()"
+                                                class="buy-now btn btn-sm btn-primary" disabled>Beli Sekarang</button></p>
+                                        <input type="hidden" name="idPro" id="idPro"
+                                            value="{{ $produk->id_produk }}">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <span>
+                                            <i class="fa-solid fa-circle-info text-danger"></i><small
+                                                class="ml-2 text-danger">Produk ini hanya dapat dibeli oleh
+                                                {{ $produk->role_pembeli }}</small>
+                                        </span>
+                                    </div>
+                                @else
+                                    <div class="col-md-6">
+                                        <p><button type="submit" class="buy-now btn btn-sm btn-primary">Tambah ke
+                                                Keranjang</button></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><button type="button" onclick="belisekarang()"
+                                                class="buy-now btn btn-sm btn-primary">Beli Sekarang</button></p>
+                                        <input type="hidden" name="idPro" id="idPro"
+                                            value="{{ $produk->id_produk }}">
+                                    </div>
+                                @endif
                             @endif
-                        @endif
+                        @endguest
 
                     </div>
                     <script>
                         function belisekarang() {
+                            var jlhVariasi = "<?php echo $jlhVariasi; ?>";
+                            console.log(jlhVariasi);
                             var jlh = document.getElementById('jumlah_pes').value;
                             var idPro = document.getElementById('idPro').value
-                            window.location.href = '/beli/sekarang/' + idPro + '/' + jlh;
+                            if (jlhVariasi != 0) {
+                                var nilai = [];
+                                for (let i = 1; i <= jlhVariasi; i++) {
+                                    const radios = document.getElementsByName('rb_' + i);
+                                    for (let j = 0; j < radios.length; j++) {
+                                        if (radios[j].checked) {
+                                            nilai.push(radios[j].value);
+                                            console.log(nilai);
+                                        }
+                                    }
+                                }
+                            }else{
+                                var nilai = 'empty'
+                            }
+                            window.location.href = '/beli/sekarang/' + idPro + '/' + jlh + '/' + nilai;
+                            console.log(nilai);
                         }
                     </script>
                 </form>

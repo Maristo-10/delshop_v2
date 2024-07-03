@@ -1,4 +1,6 @@
 @include('navs')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <style>
     .custom-control-input:checked~.custom-control-label::before {
         background-color: #007bff;
@@ -85,12 +87,17 @@
                                         @endphp
                                         <div class="col-sm-12">
                                             <span class="text-dark">Variasi :</span>
-                                            @for ($i = 0; $i < count($varPesanan); $i++)
-                                                <span class="text-dark">{{ $varPesanan[$i][1] }}</span>
-                                                @if ($i < count($varPesanan) - 1)
-                                                    ,
-                                                @endif
-                                            @endfor
+                                            @if ($detail->variasi_pes != null)
+                                                @for ($i = 0; $i < count($varPesanan); $i++)
+                                                    <span class="text-dark">{{ $varPesanan[$i][1] }}</span>
+                                                    @if ($i < count($varPesanan) - 1)
+                                                        ,
+                                                    @endif
+                                                @endfor
+                                            @else
+                                                <span></span>
+                                            @endif
+
                                         </div>
                                         <div class="col-sm-12">
                                             <span class="text-dark" style="font-weight: bold">Rp.
@@ -102,23 +109,39 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-1" style="place-self: center">
-                                    <a href="#"><span class="icon icon-trash"
-                                            style="font-size: larger"></span></a>
+                                    <button class="btn btn-light" onclick="hapusConfirmation()"><span class="icon icon-trash"
+                                            style="font-size: larger"></span></button>
                                 </div>
+                                <script>
+                                    function hapusConfirmation() {
+                                        Swal.fire({
+                                            title: 'Konfirmasi',
+                                            text: 'Apakah Anda yakin ingin menghapus data ini?',
+                                            icon: 'warning',
+                                            showCancelButton: true,
+                                            confirmButtonText: 'Ya',
+                                            cancelButtonText: 'Batal',
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = "/hapus/keranjang/{{$detail->id}}";
+                                            }
+                                        });
+                                    }
+                                </script>
                                 <div class="col-lg-3" style="place-self: center">
                                     <div class="input-group mb-3" style="max-width: 120px;">
-                                        <div class="input-group-prepend">
+                                        {{-- <div class="input-group-prepend">
                                             <button class="btn btn-outline-primary js-btn-minus"
                                                 type="button">&minus;</button>
-                                        </div>
+                                        </div> --}}
                                         <input type="text" class="form-control text-center"
                                             value="{{ $detail->jumlah }}" placeholder=""
                                             aria-label="Example text with button addon" aria-describedby="button-addon1"
-                                            id="jumlah_pes" name="jumlah_pes">
-                                        <div class="input-group-append">
+                                            id="jumlah_pes" name="jumlah_pes" disabled>
+                                        {{-- <div class="input-group-append">
                                             <button class="btn btn-outline-primary js-btn-plus"
                                                 type="button">&plus;</button>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>

@@ -30,7 +30,10 @@
                 echo number_format($angka, 0, ',', '.');
                 ?></td>
                 @php
-                    $terjual = App\Models\DetailPesanan::where('produk_id', $penj->id_produk)->get();
+                    $terjual = App\Models\DetailPesanan::join('pesanans', 'pesanans.id','=', 'pesanandetails.pesanan_id')->where(
+                                            'pesanandetails.produk_id',
+                                            $penj->id_produk,
+                                        )->where('pesanans.status', 'Selesai')->get();
                     $jlhterjual = 0;
                     foreach ($terjual as $terj) {
                         $jlhterjual += $terj->jumlah;

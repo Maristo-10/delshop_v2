@@ -13,13 +13,13 @@
                                 <h5 class="text-dark" style="font-weight:bold ">Pemesan</h5>
                             </div>
                             <div class="col-12">
-                                <span class="text-dark">Mario Tangkas</span>
+                                <span class="text-dark">{{Auth::user()->name}}</span>
                             </div>
                             <div class="col-12">
-                                <span class="text-dark">+62 812 3456 7890</span>
+                                <span class="text-dark">{{Auth::user()->no_telp}}</span>
                             </div>
                             <div class="col-12">
-                                <span class="text-dark">Mahasiswa</span>
+                                <span class="text-dark">{{Auth::user()->role_pengguna}}</span>
                             </div>
                         </div>
                     </div>
@@ -45,12 +45,16 @@
                                         @endphp
                                         <div class="col-sm-12">
                                             <span class="text-dark">Variasi :</span>
-                                            @for ($i = 0; $i < count($varPesanan); $i++)
-                                                <span class="text-dark">{{ $varPesanan[$i][1] }}</span>
-                                                @if ($i < count($varPesanan) - 1)
-                                                    ,
-                                                @endif
-                                            @endfor
+                                            @if ($data->variasi_pes != null)
+                                                @for ($i = 0; $i < count($varPesanan); $i++)
+                                                    <span class="text-dark">{{ $varPesanan[$i][1] }}</span>
+                                                    @if ($i < count($varPesanan) - 1)
+                                                        ,
+                                                    @endif
+                                                @endfor
+                                            @else
+                                                <span></span>
+                                            @endif
                                         </div>
                                         <div class="col-sm-12">
                                             <span class="text-dark">Jumlah Produk : {{ $data->jumlah }}</span>
@@ -155,13 +159,13 @@
                                 <h5 class="text-dark" style="font-weight:bold ">Pemesan</h5>
                             </div>
                             <div class="col-12">
-                                <span class="text-dark">Mario Tangkas</span>
+                                <span class="text-dark">{{Auth::user()->name}}</span>
                             </div>
                             <div class="col-12">
-                                <span class="text-dark">+62 812 3456 7890</span>
+                                <span class="text-dark">{{Auth::user()->no_telp}}</span>
                             </div>
                             <div class="col-12">
-                                <span class="text-dark">Mahasiswa</span>
+                                <span class="text-dark">{{Auth::user()->role_pengguna}}</span>
                             </div>
                         </div>
                     </div>
@@ -178,8 +182,9 @@
                                             style="font-weight: bold">{{ $produk->nama_produk }}</span>
                                     </div>
                                     <div class="col-sm-12">
-                                        <span class="text-dark">Variasi : </span>
+                                        <span class="text-dark">Variasi : {{$var}}</span>
                                     </div>
+
                                     <div class="col-sm-12">
                                         <span class="text-dark">Jumlah Produk : {{ $jlh }}</span>
                                     </div>
@@ -238,8 +243,12 @@
                                 <form action="/checkout/sekarang/produk" method="post">
                                     @csrf
                                     <div class="col-lg-12 pt-2" style="text-align-last:center">
+                                        @php
+                                            $variasi = implode(', ', $aVariasi)
+                                        @endphp
                                         <input type="hidden" name="jlh_pesanan" id="jlh_pesanan"
                                             value="{{ $jlh }}">
+                                            <input type="hidden" name="aVariasi" value="{{$variasi}}">
                                         <input type="hidden" name="idPro" id="idPro"
                                             value="{{ $produk->id_produk }}">
                                         <p><button type="submit" class="buy-now btn btn-sm btn-primary">Pesan

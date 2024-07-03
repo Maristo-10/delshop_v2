@@ -40,13 +40,25 @@ class PesananController extends Controller
         ]);
     }
 
+    public function hapuskeranjang($id){
+        $pesanan = Pesanan::find($id);
+
+        Pesanan::destroy($id);
+
+        return redirect()->route("home.dashboard_pembeli")->with('success', 'Pesanan telah berhasil dihapus dari keranjang');
+    }
+
     public function tambahkeranjang(Request $request, $id)
     {
         for ($i = 1; $i <= $request->jlhV; $i++) {
             $vari = explode(",", $request['rb_' . $i]);
             $variasi[] = $vari;
         }
-        $varPes = json_encode($variasi);
+        if ($request->jlhV != 0) {
+            $varPes = json_encode($variasi);
+        }
+
+
         $produk = Produk::where('id_produk', $id)->first();
         $tanggal = Carbon::now();
         $date = $tanggal->format('Y-m-d');
@@ -63,25 +75,29 @@ class PesananController extends Controller
             $keranjang->user_id = Auth::user()->id;
             $keranjang->tanggal = $tanggal;
             $keranjang->total_harga = 0;
+            $keranjang->nama_pengambil =  Auth::user()->name;
             $keranjang->save();
         }
 
         $now = $tanggal->format('Ymd');
-        $cek_keranjang->update([
+        $periksa_keranjang = Pesanan::where('user_id', Auth::user()->id)->where('status', 'Keranjang')->first();
+        $periksa_keranjang->update([
             'kode' => "DEL$now$jumlah_pesanan"
         ]);
-        $cek_detailpesanan = DetailPesanan::where('produk_id', $produk->id_produk)->where('pesanan_id', $cek_keranjang->id)->first();
+        $cek_detailpesanan = DetailPesanan::where('produk_id', $produk->id_produk)->where('pesanan_id', $periksa_keranjang->id)->first();
         if ($cek_detailpesanan == null) {
             $pesanan_detail = new DetailPesanan();
             $pesanan_detail->produk_id = $produk->id_produk;
-            $pesanan_detail->pesanan_id = $cek_keranjang->id;
+            $pesanan_detail->pesanan_id = $periksa_keranjang->id;
             $pesanan_detail->jumlah = $request->jumlah_pes;
             $pesanan_detail->jumlah_harga = $produk->harga * $request->jumlah_pes;
             // $pesanan_detail->ukurans = $request->ukuran;
             // $pesanan_detail->warn    a_produk = $request->warna;
             // $pesanan_detail->angkatans = $request->angkatan;
             $pesanan_detail->modal_details = $produk->modal * $request->jumlah_pes;
-            $pesanan_detail->variasi_pes = $varPes;
+            if ($request->jlhV != 0) {
+                $pesanan_detail->variasi_pes = $varPes;
+            }
             $pesanan_detail->save();
         }
 
@@ -95,9 +111,9 @@ class PesananController extends Controller
             $cek_detailpesanan->update();
         }
 
-        $cek_keranjang->total_harga = $cek_keranjang->total_harga + ($produk->harga * $request->jumlah_pes);
-        $cek_keranjang->modal_pesanan = $cek_keranjang->modal_pesanan + ($produk->modal * $request->jumlah_pes);
-        $cek_keranjang->update();
+        $periksa_keranjang->total_harga = $periksa_keranjang->total_harga + ($produk->harga * $request->jumlah_pes);
+        $periksa_keranjang->modal_pesanan = $periksa_keranjang->modal_pesanan + ($produk->modal * $request->jumlah_pes);
+        $periksa_keranjang->update();
         return redirect()->route("pembeli.keranjang")->with('success', 'Produk telah berhasil dimasukkan ke dalam keranjang');
     }
 
@@ -199,24 +215,24 @@ class PesananController extends Controller
             ->select('pesanans.*', 'users.name')
             ->where('user_id', Auth::user()->id)->where('status', 'Menunggu')->get();
 
-            $pesanan_diproses = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
+        $pesanan_diproses = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
             ->select('pesanans.*', 'users.name')
             ->where('user_id', Auth::user()->id)->where('status', 'Diproses')->get();
 
-            $pesanan_selesai = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
+        $pesanan_selesai = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
             ->select('pesanans.*', 'users.name')
             ->where('user_id', Auth::user()->id)->where('status', 'Selesai')->get();
 
-            $pesanan_dibatalkan = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
+        $pesanan_dibatalkan = Pesanan::leftjoin('users', 'users.id', '=', 'pesanans.user_id')
             ->select('pesanans.*', 'users.name')
             ->where('user_id', Auth::user()->id)->where('status', 'Dibatalkan')->get();
 
         return view('pembeli.riwayatpesanan', [
             'pesanan' => $pesanan,
-            'pesanan_dibatalkan'=>$pesanan_dibatalkan,
-            'pesanan_diproses'=>$pesanan_diproses,
-            'pesanan_menunggu'=>$pesanan_menunggu,
-            'pesanan_selesai'=>$pesanan_selesai
+            'pesanan_dibatalkan' => $pesanan_dibatalkan,
+            'pesanan_diproses' => $pesanan_diproses,
+            'pesanan_menunggu' => $pesanan_menunggu,
+            'pesanan_selesai' => $pesanan_selesai
         ]);
     }
 
@@ -242,22 +258,43 @@ class PesananController extends Controller
         ]);
     }
 
-    public function belisekarang($id, $jlh)
+    public function belisekarang($id, $jlh, $variasi)
     {
         $produk = Produk::where('id_produk', $id)->first();
 
+
+        if ($variasi != 'empty') {
+            $aVariasi = explode(',', $variasi);
+            $jlhVar = count($aVariasi);
+            $value = [];
+            for ($i = 1; $i < $jlhVar; $i = $i + 2) {
+                array_push($value, $aVariasi[$i]);
+            }
+            $var = implode(', ', $value);
+        } else {
+            $var = "";
+            $aVariasi = [];
+        }
+
+
+
         return view('pembeli.checkout', [
             'produk' => $produk,
-            'jlh' => $jlh
+            'jlh' => $jlh,
+            'aVariasi' => $aVariasi,
+            'var' => $var
         ]);
     }
 
     public function checkoutsekarangproduk(Request $request)
     {
+        $variasi = explode(', ', $request->aVariasi);
+        $jlhVar = count($variasi);
         $tanggal = Carbon::now();
         $date = $tanggal->format('Y-m-d');
         $jumlah_pesanan = Pesanan::where('tanggal', $date)->count();
         $now = $tanggal->format('Ymd');
+        $varPes = json_encode($variasi);
 
         $produk = Produk::where('id_produk', $request->idPro)->first();
         $user = User::where('id', Auth::user()->id)->first();
@@ -284,6 +321,7 @@ class PesananController extends Controller
         $pesanan_detail->modal_details = $produk->modal * $request->jlh_pesanan;
         $pesanan_detail->produk_id = $produk->id_produk;
         $pesanan_detail->pesanan_id = $pesanan_new->id;
+        $pesanan_detail->variasi_pes = $varPes;
         $pesanan_detail->save();
 
         $cek_pesanan = Pesanan::where('kode', $kode)->first();

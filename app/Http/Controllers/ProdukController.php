@@ -14,7 +14,7 @@ class ProdukController extends Controller
 {
     //Pembeli
     public function produk(Request $request){
-        $produk = Produk::where('status_produk', 'Aktif')->paginate(5);
+        $produk = Produk::where('status_produk', 'Aktif')->paginate(15);
         $kategori_produk = KategoriProdukModel::where('status_kategori','Aktif')->get();
         return view('pembeli.produk',[
             'produk' => $produk,
@@ -24,17 +24,17 @@ class ProdukController extends Controller
 
     public function produk_kat($kategori){
         if($kategori == "semua"){
-            $produk = Produk::where('status_produk', 'Aktif')->where('kategori_produk', $kategori)->paginate(1);
+            $produk = Produk::where('status_produk', 'Aktif')->where('kategori_produk', $kategori)->paginate(15);
         }elseif($kategori == "terbaru"){
-            $produk = Produk::where('status_produk', 'Aktif')->orderBy('created_at', "DESC")->paginate(2);
+            $produk = Produk::where('status_produk', 'Aktif')->orderBy('created_at', "DESC")->paginate(15);
         }elseif($kategori == "terlama"){
-            $produk = Produk::where('status_produk', 'Aktif')->orderBy('created_at', "ASC")->paginate(2);
+            $produk = Produk::where('status_produk', 'Aktif')->orderBy('created_at', "ASC")->paginate(15);
         }elseif($kategori == "tertinggi"){
-            $produk = Produk::where('status_produk', 'Aktif')->orderBy('harga', "DESC")->paginate(2);
+            $produk = Produk::where('status_produk', 'Aktif')->orderBy('harga', "DESC")->paginate(15);
         }elseif($kategori == "terendah"){
-            $produk = Produk::where('status_produk', 'Aktif')->orderBy('harga', "ASC")->paginate(2);
+            $produk = Produk::where('status_produk', 'Aktif')->orderBy('harga', "ASC")->paginate(15);
         }else{
-            $produk = Produk::where('status_produk', 'Aktif')->where('kategori_produk', $kategori)->paginate(1);
+            $produk = Produk::where('status_produk', 'Aktif')->where('kategori_produk', $kategori)->paginate(15);
         }
         $kategori_produk = KategoriProdukModel::where('status_kategori','Aktif')->get();
         return view('pembeli.produk',[

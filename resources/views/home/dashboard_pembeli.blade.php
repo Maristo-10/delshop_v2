@@ -51,7 +51,7 @@
                             <a class="block-2-item" href="/produk/{{ $katpro->kategori }}">
                                 <figure class="image">
                                     <img src="/kategori-produk-images/{{ $katpro->gambar_kategori }}" alt=""
-                                        class="img-fluid w-100" style="min-height: 150px">
+                                        class="img-fluid w-100" style="max-height: 150px;min-height: 150px">
                                 </figure>
                                 <div class="text">
                                     <span class="text-uppercase">kategori</span>

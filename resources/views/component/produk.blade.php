@@ -10,19 +10,18 @@
                                 <button type="button" class="btn btn-sm dropdown-toggle text-white"
                                     id="dropdownMenuReference" data-toggle="dropdown"
                                     style="background-color: #00337C !important">Urutkan</button>
-                                    @php
-                                        $semua = "semua";
-                                        $terlama = "terlama";
-                                        $terbaru = "terbaru";
-                                        $tertinggi = "tertinggi";
-                                        $terendah = "terendah";
-                                    @endphp
+                                @php
+                                    $semua = 'semua';
+                                    $terlama = 'terlama';
+                                    $terbaru = 'terbaru';
+                                    $tertinggi = 'tertinggi';
+                                    $terendah = 'terendah';
+                                @endphp
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                                    <a class="dropdown-item" href="/produk/{{$semua}}">Semua Produk</a>
-                                    <a class="dropdown-item" href="/produk/{{$terbaru}}">Terbaru</a>
-                                    <a class="dropdown-item" href="/produk/{{$terlama}}">Terlama</a>
-                                    <a class="dropdown-item" href="/produk/{{$tertinggi}}">Harga Tertinggi</a>
-                                    <a class="dropdown-item" href="/produk/{{$terendah}}">Harga Terendah</a>
+                                    <a class="dropdown-item" href="/produk/{{ $terbaru }}">Terbaru</a>
+                                    <a class="dropdown-item" href="/produk/{{ $terlama }}">Terlama</a>
+                                    <a class="dropdown-item" href="/produk/{{ $tertinggi }}">Harga Tertinggi</a>
+                                    <a class="dropdown-item" href="/produk/{{ $terendah }}">Harga Terendah</a>
                                 </div>
                             </div>
                         </div>
@@ -30,16 +29,24 @@
                 </div>
                 <div class="row mb-5" id="produk_list">
                     @foreach ($produk as $pro)
-                    @php
-                            $jumlahTerjual = App\Models\DetailPesanan::join('pesanans','pesanans.id','=', 'pesanandetails.pesanan_id')->where('pesanandetails.produk_id', $pro->id_produk)->where('pesanans.status', 'Selesai')->get();
+                        @php
+                            $jumlahTerjual = App\Models\DetailPesanan::join(
+                                'pesanans',
+                                'pesanans.id',
+                                '=',
+                                'pesanandetails.pesanan_id',
+                            )
+                                ->where('pesanandetails.produk_id', $pro->id_produk)
+                                ->where('pesanans.status', 'Selesai')
+                                ->get();
 
-                            $jlhterjual =0;
+                            $jlhterjual = 0;
                             foreach ($jumlahTerjual as $terjual) {
                                 $jlhterjual += $terjual->jumlah;
                             }
                         @endphp
                         <div class="col-sm-6 col-lg-3 mb-4" data-aos="fade-up">
-                            <div class="block-4 text-center border"  style="border-radius: 5px">
+                            <div class="block-4 text-center border" style="border-radius: 5px">
                                 <figure class="block-4-image">
                                     <a href="/detailproduk/{{ $pro->id_produk }}"><img
                                             src="/product-images/{{ $pro->gambar_produk }}" alt="Image placeholder"
@@ -55,7 +62,7 @@
                                     $angka = $pro->harga;
                                     echo number_format($angka, 0, ',', '.');
                                     ?></p>
-                                    <p class="text-primary font-weight-bold">{{$jlhterjual}} Terjual</p>
+                                    <p class="text-primary font-weight-bold">{{ $jlhterjual }} Terjual</p>
                                 </div>
 
                             </div>
@@ -102,9 +109,14 @@
                     <h3 class="mb-3 h6 text-uppercase text-black d-block">Kategori</h3>
                     <ul class="list-unstyled mb-0">
                         @foreach ($kategori_produk as $kapro)
-                            <li class="mb-1"><a href="/produk/{{ $kapro->kategori }}"
-                                    class="d-flex"><span>{{ $kapro->kategori }}</span> <span
-                                        class="text-black ml-auto">(2,220)</span></a></li>
+                            @php
+                                $jlhProdukKat = App\Models\Produk::where('kategori_produk', $kapro->kategori)->count();
+                            @endphp
+                            @if ($jlhProdukKat != 0)
+                                <li class="mb-1"><a href="/produk/{{ $kapro->kategori }}"
+                                        class="d-flex"><span>{{ $kapro->kategori }}</span> <span
+                                            class="text-black ml-auto">({{ $jlhProdukKat }})</span></a></li>
+                            @endif
                         @endforeach
                     </ul>
                 </div>
@@ -144,10 +156,10 @@
     }
 
     function renderNoResult() {
-            var noResultHtml =
-                '<div class="col-md-12 text-center"><p>Tidak ada hasil yang ditemukan.</p></div>';
-            $('#produk_list').html(noResultHtml);
-        }
+        var noResultHtml =
+            '<div class="col-md-12 text-center"><p>Tidak ada hasil yang ditemukan.</p></div>';
+        $('#produk_list').html(noResultHtml);
+    }
 
     $(document).ready(function() {
         function fetchProduk(query) {

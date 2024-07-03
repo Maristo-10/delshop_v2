@@ -98,8 +98,9 @@ Route::get('/riwayat-pesanan', [PesananController::class, 'riwayatpesanan'])->na
 Route::get('/batalkan/pesanan/{id}',[PesananController::class, 'batalkanpesanan'])->name('pembeli.batalkanpesanan');
 Route::get('/detail-pesanan/{kode}', [PesananController::class, 'detailpesanan'])->name('pembeli.detailpesanan');
 
-Route::get('/beli/sekarang/{id}/{jlh}',[PesananController::class, 'belisekarang'])->name('pembeli.belisekarang');
+Route::get('/beli/sekarang/{id}/{jlh}/{variasi}',[PesananController::class, 'belisekarang'])->name('pembeli.belisekarang');
 Route::post('/checkout/sekarang/produk', [PesananController::class, 'checkoutsekarangproduk'])->name('pembeli.checkoutsekarangproduk');
+Route::get('/hapus/keranjang/{id}', [PesananController::class, 'hapuskeranjang'])->name('hapuskeranjang');
 
 
 
