@@ -38,6 +38,8 @@ class HomeController extends Controller
 
         $untung =0;
 
+        //Update
+
         foreach($pesanan as $pes){
             $laba = $pes->total_harga - $pes->modal_pesanan;
             $untung += $laba;
