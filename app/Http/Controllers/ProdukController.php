@@ -13,33 +13,35 @@ use App\Models\VariasiProduk;
 class ProdukController extends Controller
 {
     //Pembeli
-    public function produk(Request $request){
+    public function produk(Request $request)
+    {
         $produk = Produk::where('status_produk', 'Aktif')->paginate(15);
-        $kategori_produk = KategoriProdukModel::where('status_kategori','Aktif')->get();
-        return view('pembeli.produk',[
+        $kategori_produk = KategoriProdukModel::where('status_kategori', 'Aktif')->get();
+        return view('pembeli.produk', [
             'produk' => $produk,
-            'kategori_produk' =>$kategori_produk
+            'kategori_produk' => $kategori_produk
         ]);
     }
 
-    public function produk_kat($kategori){
-        if($kategori == "semua"){
+    public function produk_kat($kategori)
+    {
+        if ($kategori == "semua") {
             $produk = Produk::where('status_produk', 'Aktif')->where('kategori_produk', $kategori)->paginate(15);
-        }elseif($kategori == "terbaru"){
+        } elseif ($kategori == "terbaru") {
             $produk = Produk::where('status_produk', 'Aktif')->orderBy('created_at', "DESC")->paginate(15);
-        }elseif($kategori == "terlama"){
+        } elseif ($kategori == "terlama") {
             $produk = Produk::where('status_produk', 'Aktif')->orderBy('created_at', "ASC")->paginate(15);
-        }elseif($kategori == "tertinggi"){
+        } elseif ($kategori == "tertinggi") {
             $produk = Produk::where('status_produk', 'Aktif')->orderBy('harga', "DESC")->paginate(15);
-        }elseif($kategori == "terendah"){
+        } elseif ($kategori == "terendah") {
             $produk = Produk::where('status_produk', 'Aktif')->orderBy('harga', "ASC")->paginate(15);
-        }else{
+        } else {
             $produk = Produk::where('status_produk', 'Aktif')->where('kategori_produk', $kategori)->paginate(15);
         }
-        $kategori_produk = KategoriProdukModel::where('status_kategori','Aktif')->get();
-        return view('pembeli.produk',[
+        $kategori_produk = KategoriProdukModel::where('status_kategori', 'Aktif')->get();
+        return view('pembeli.produk', [
             'produk' => $produk,
-            'kategori_produk' =>$kategori_produk
+            'kategori_produk' => $kategori_produk
         ]);
     }
 
@@ -57,32 +59,36 @@ class ProdukController extends Controller
 
 
 
-    public function detailproduk($id){
+    public function detailproduk($id)
+    {
         $produk = Produk::where('id_produk', $id)->first();
         $variasi_produk = VariasiProduk::where('produk_id', $produk->id_produk)->get();
-        return view('pembeli.detailproduk',[
-            'produk'=>$produk,
+        return view('pembeli.detailproduk', [
+            'produk' => $produk,
             'variasi_produk' => $variasi_produk
         ]);
     }
 
 
     //Admin
-    public function kelolaproduk(){
+    public function kelolaproduk()
+    {
         $produk = Produk::all();
-        return view('admin.kelolaproduk',[
-            'produk'=> $produk
+        return view('admin.kelolaproduk', [
+            'produk' => $produk
         ]);
     }
 
-    public function tambahproduk(){
+    public function tambahproduk()
+    {
         $kategori_produk = KategoriProdukModel::where('status_kategori', 'Aktif')->get();
-        return view('admin.tambahproduk',[
+        return view('admin.tambahproduk', [
             'kategori_produk' => $kategori_produk
         ]);
     }
 
-    public function prosestambahproduk(Request $request){
+    public function prosestambahproduk(Request $request)
+    {
         $request->validate([
             'nama_produk' => 'required',
             'harga_jual' => 'required',
@@ -121,11 +127,11 @@ class ProdukController extends Controller
         $produk_last = Produk::where('status_produk', "Aktif")->orderBy("created_at", "DESC")->first();
         $jlhVariasi = $request->idVariasi;
 
-        if($jlhVariasi != NULL){
-            for($i=1; $i<= $jlhVariasi; $i++){
-                $jenis_variasi = json_encode($request["jenis_variasi_".$i]);
+        if ($jlhVariasi != NULL) {
+            for ($i = 1; $i <= $jlhVariasi; $i++) {
+                $jenis_variasi = json_encode($request["jenis_variasi_" . $i]);
                 $variasi = new VariasiProduk();
-                $variasi->nama_variasi = $request["variasi_produk_".$i];
+                $variasi->nama_variasi = $request["variasi_produk_" . $i];
                 $variasi->variasi = $jenis_variasi;
                 $variasi->produk_id = $produk_last->id_produk;
                 $variasi->save();
@@ -134,27 +140,44 @@ class ProdukController extends Controller
         return redirect()->route("admin.kelolaproduk")->with('success', 'Data Produk Berhasil Di Tambahkan');
     }
 
-    public function ubahproduk($id){
+    public function ubahproduk($id)
+    {
         $produk = Produk::where('id_produk', $id)->first();
         $kategori_produk = KategoriProdukModel::where('status_kategori', 'Aktif')->get();
-        return view('admin.ubahproduk',[
-            'produk'=> $produk,
+        return view('admin.ubahproduk', [
+            'produk' => $produk,
             'kategori_produk' => $kategori_produk
         ]);
     }
 
-    public function prosesubahproduk(Request $request, $id){
-        $request->validate([
-            'nama_produk' => 'required',
-            'harga_jual' => 'required',
-            'harga_modal' => 'required',
-            'jumlah_produk' => 'required',
-            'kategori_produk' => 'required',
-            'kategori_pembeli' => 'required',
-            'deskripsi' => 'required',
-            'gambar_produk' => 'required|image|file|max:10000',
-        ]);
+    public function prosesubahproduk(Request $request, $id)
+    {
         $produk = Produk::where('id_produk', $id)->first();
+
+
+
+        $fieldToColumnMap = [
+            'nama_produk' => 'nama_produk',
+            'harga_jual'=>'harga',
+            'harga_modal' =>'modal',
+            'jumlah_produk'=>'jumlah_produk',
+            'kategori_produk'=>'kategori_produk',
+            'kategori_pembeli' =>'role_pembeli',
+            'deskripsi'=>'deskripsi',
+        ];
+
+        $data = $request->only(array_keys($fieldToColumnMap));
+
+        $data = array_filter($data, function ($value) {
+            return !is_null($value);
+        });
+
+        $updateData = [];
+
+        foreach ($data as $formField => $value) {
+            $column = $fieldToColumnMap[$formField];
+            $updateData[$column] = $value;
+        }
 
         if ($request->file('gambar_produk')) {
             if ($request->hasfile('gambar_produk')) {
@@ -164,27 +187,20 @@ class ProdukController extends Controller
             }
         }
 
-        $produk->update([
-        'nama_produk' => $request->nama_produk,
-        'harga' => $request->harga_jual,
-        'modal' => $request->harga_modal,
-        'jumlah_produk' => $request->jumlah_produk,
-        'kategori_produk' => $request->kategori_produk,
-        'role_pembeli' => $request->kategori_pembeli,
-        'deskripsi' => $request->deskripsi,
-        ]);
+        $produk->update($updateData);
 
         return redirect()->route("admin.kelolaproduk")->with('success', 'Data Produk Berhasil Diubah');
     }
 
-    public function ubahstatusproduk($id){
+    public function ubahstatusproduk($id)
+    {
         $produk = Produk::where('id_produk', $id)->first();
 
-        if($produk->status_produk == 'Non-Aktif'){
+        if ($produk->status_produk == 'Non-Aktif') {
             $produk->update([
                 'status_produk' => 'Aktif'
             ]);
-        }else{
+        } else {
             $produk->update([
                 'status_produk' => 'Non-Aktif'
             ]);
@@ -193,7 +209,8 @@ class ProdukController extends Controller
         return redirect()->route("admin.kelolaproduk")->with('success', 'Status Produk Berhasil Diubah');
     }
 
-    public function penjualanproduk(){
+    public function penjualanproduk()
+    {
         $now = Carbon::now()->format('Y');
         $produk = DB::table('produk')
             ->leftJoin('pesanandetails', function ($join) {
@@ -204,8 +221,8 @@ class ProdukController extends Controller
                 $join->on('pesanandetails.pesanan_id', '=', 'pesanans.id')
                     ->where('pesanans.status', '=', 'Selesai');
             })
-            ->select('produk.nama_produk','produk.harga', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.kategori_produk', 'produk.ukuran_produk','produk.warna', 'produk.angkatan', 'produk.id_produk','produk.gambar_produk','produk.role_pembeli')
-            ->selectRaw('SUM(CASE WHEN YEAR(pesanans.tanggal) = '.$now.' THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS total')
+            ->select('produk.nama_produk', 'produk.harga', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.kategori_produk', 'produk.ukuran_produk', 'produk.warna', 'produk.angkatan', 'produk.id_produk', 'produk.gambar_produk', 'produk.role_pembeli')
+            ->selectRaw('SUM(CASE WHEN YEAR(pesanans.tanggal) = ' . $now . ' THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS total')
             ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 1 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS januari')
             ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 2 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS februari')
             ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 3 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS maret')
@@ -218,11 +235,11 @@ class ProdukController extends Controller
             ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 10 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS oktober')
             ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 11 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS november')
             ->selectRaw('SUM(CASE WHEN MONTH(pesanans.tanggal) = 12 THEN COALESCE(pesanandetails.jumlah, 0) ELSE 0 END) AS desember')
-            ->groupBy('id_produk','produk.nama_produk', 'produk.harga', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.kategori_produk', 'produk.ukuran_produk','produk.warna', 'produk.angkatan','produk.gambar_produk','produk.role_pembeli')
+            ->groupBy('id_produk', 'produk.nama_produk', 'produk.harga', 'produk.jumlah_produk', 'produk.deskripsi', 'produk.kategori_produk', 'produk.ukuran_produk', 'produk.warna', 'produk.angkatan', 'produk.gambar_produk', 'produk.role_pembeli')
             ->orderBy('total', 'DESC')
             ->get();
-        return view('admin.detailpenjualanproduk',[
-            'produk'=>$produk
+        return view('admin.detailpenjualanproduk', [
+            'produk' => $produk
         ]);
     }
 }

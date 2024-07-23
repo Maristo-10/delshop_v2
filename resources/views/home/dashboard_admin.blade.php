@@ -10,6 +10,26 @@
     Dashboard
 @endsection
 @section('content')
+@if (session('error'))
+    <script>
+        // Tampilkan pesan error dalam pop-up
+        Swal.fire({
+            icon: 'error',
+            title: 'Tidak Berhasil',
+            text: '{{ session('error') }}', // Ambil pesan error dari session
+        });
+    </script>
+@endif
+@if (session('success'))
+    <script>
+        // Tampilkan pesan error dalam pop-up
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session('success') }}', // Ambil pesan error dari session
+        });
+    </script>
+@endif
     <div class="row my-4">
         <div class="col-md-4">
             <div class="card shadow mb-4">

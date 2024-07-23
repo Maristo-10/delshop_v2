@@ -1,6 +1,26 @@
 @extends('home')
 
 @section('content')
+@if (session('error'))
+    <script>
+        // Tampilkan pesan error dalam pop-up
+        Swal.fire({
+            icon: 'error',
+            title: 'Tidak Berhasil',
+            text: '{{ session('error') }}', // Ambil pesan error dari session
+        });
+    </script>
+@endif
+@if (session('success'))
+    <script>
+        // Tampilkan pesan error dalam pop-up
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session('success') }}', // Ambil pesan error dari session
+        });
+    </script>
+@endif
     <style>
         /* CSS untuk mengubah warna ikon */
         .carousel-control-prev-icon {
@@ -60,29 +80,6 @@
                             </a>
                         </div>
                     @endforeach
-
-                    {{-- <div class="col-sm-6 col-md-6 col-lg-2 mb-5 mb-lg-0">
-                        <a class="block-2-item" href="#">
-                            <figure class="image">
-                                <img src="pembeli/images/children.jpg" alt="" class="img-fluid">
-                            </figure>
-                            <div class="text">
-                                <span class="text-uppercase">Collections</span>
-                                <h6>Children</h6>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-lg-2 mb-5 mb-lg-0">
-                        <a class="block-2-item" href="#">
-                            <figure class="image">
-                                <img src="pembeli/images/men.jpg" alt="" class="img-fluid">
-                            </figure>
-                            <div class="text">
-                                <span class="text-uppercase">Collections</span>
-                                <h6>Men</h6>
-                            </div>
-                        </a>
-                    </div> --}}
                 </div>
             </div>
         </div>
@@ -112,13 +109,16 @@
                                     <figure class="block-4-image">
                                         <img src="/product-images/{{$terbaru->gambar_produk}}" alt="Image placeholder" class="img-fluid" style="min-height: 250px; max-height: 250px">
                                     </figure>
-                                    <div class="block-4-text p-4">
-                                        <h6><a href="#">{{$terbaru->nama_produk}}</a></h6>
+                                    <div class="block-4-text p-2">
+                                        <h6><a href="/detailproduk/{{$terbaru->id_produk}}">{{$terbaru->nama_produk}}</a></h6>
                                         <p class="mb-0">Rp. <?php
                                             echo number_format($terbaru->harga, 0, ',', '.');
                                             ?></p>
                                         <p class="text-primary font-weight-bold">{{$jlhterjual}} Terjual</p>
                                     </div>
+                                </div>
+                                <div class="block-4 text-center border" style="background-color: #00337C;border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;">
+                                    <a href="/detailproduk/{{ $terbaru->id_produk }}"><h5 class="text-light mt-2" style="text-align: center">Lihat Produk</h5></a>
                                 </div>
                             </div>
                         @endforeach
