@@ -41,7 +41,7 @@
                                 <div class="col-12">
                                     <label for="yourUsername" class="form-label">Email</label>
                                     <div class="input-group has-validation">
-                                        <span class="bi bi-envelope input-group-text" id="inputGroupPrepend"></span>
+                                        <span class=" input-group-text" id="inputGroupPrepend"><i class="fa-solid fa-envelope fa-sm"></i></span>
                                         <input id="email" type="email"
                                             class="form-control @error('email') is-invalid @enderror" name="email"
                                             value="{{ old('email') }}" required autocomplete="email" autofocus>
@@ -56,10 +56,14 @@
                                 <div class="col-12">
                                     <label for="yourPassword" class="form-label">Password</label>
                                     <div class="input-group has-validation">
-                                        <span class="bi bi-lock input-group-text" id="inputGroupPrepend"></span>
+                                        <span class="input-group-text" id="inputGroupPrepend"><i class="fa-solid fa-lock fa-sm"></i></span>
                                         <input id="password" type="password"
                                             class="form-control @error('password') is-invalid @enderror" name="password"
-                                            required autocomplete="current-password">
+                                            required autocomplete="current-password" style="border-right-color:white">
+                                            <span class="input-group-text bg-white" id="togglePassword"
+                                            style="cursor: pointer;border-left-color:white">
+                                            <i class="fa-solid fa-eye fa-sm"></i>
+                                        </span>
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -100,11 +104,29 @@
                                         @endif
                                     </div> --}}
                             </form>
+                            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                            <script type="text/javascript">
+                                $(document).ready(function() {
+                                    $('#togglePassword').click(function() {
+                                        let passwordField = $('#password');
+                                        let icon = $(this).find('i');
+                                        if (passwordField.attr('type') === 'password') {
+                                            passwordField.attr('type', 'text');
+                                            icon.removeClass('fa-solid fa-eye').addClass('fa-solid fa-eye-slash');
+                                        } else {
+                                            passwordField.attr('type', 'password');
+                                            icon.removeClass('fa-solid fa-eye-slash').addClass('fa-solid fa-eye');
+                                        }
+                                    });
+                                });
+                            </script>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         </div>
+
     </section>
 @endsection

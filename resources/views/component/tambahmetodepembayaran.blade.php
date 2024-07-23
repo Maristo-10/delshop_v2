@@ -11,7 +11,7 @@
                     <div class="form-group mb-3">
                         <label for="kategori_pembeli">Kategori Pembayaran</label>
                         <select class="form-control" id="kategori_layanan" name="kategori_layanan">
-                            <option disabled selected>Pilih Kategori Pembeli</option>
+                            <option disabled selected>Pilih Kategori Pembayaran</option>
                             @foreach ($kapem as $kp)
                                 <option value="{{ $kp->id_kapem }}">{{ $kp->kategori_pembayaran }}</option>
                             @endforeach

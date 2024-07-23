@@ -45,9 +45,9 @@
                                 $jlhterjual += $terjual->jumlah;
                             }
                         @endphp
-                        <div class="col-sm-6 col-lg-3 mb-4" data-aos="fade-up">
-                            <div class="block-4 text-center border" style="border-radius: 5px">
-                                <figure class="block-4-image">
+                        <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+                            <div class="block-4 text-center border" style="border-top-right-radius: 5px;border-top-left-radius: 5px;">
+                                <figure class="block-4-image mt-2">
                                     <a href="/detailproduk/{{ $pro->id_produk }}"><img
                                             src="/product-images/{{ $pro->gambar_produk }}" alt="Image placeholder"
                                             class="img-fluid"
@@ -65,6 +65,9 @@
                                     <p class="text-primary font-weight-bold">{{ $jlhterjual }} Terjual</p>
                                 </div>
 
+                            </div>
+                            <div class="block-4 text-center border" style="background-color: #00337C;border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;">
+                                <a href="/detailproduk/{{ $pro->id_produk }}"><h5 class="text-light mt-2" style="text-align: center">Lihat Produk</h5></a>
                             </div>
                         </div>
                     @endforeach
@@ -114,8 +117,7 @@
                             @endphp
                             @if ($jlhProdukKat != 0)
                                 <li class="mb-1"><a href="/produk/{{ $kapro->kategori }}"
-                                        class="d-flex"><span>{{ $kapro->kategori }}</span> <span
-                                            class="text-black ml-auto">({{ $jlhProdukKat }})</span></a></li>
+                                        class="d-flex"><span>{{ $kapro->kategori }}</span></a></li>
                             @endif
                         @endforeach
                     </ul>

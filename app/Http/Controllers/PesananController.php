@@ -40,10 +40,24 @@ class PesananController extends Controller
         ]);
     }
 
-    public function hapuskeranjang($id){
-        $pesanan = Pesanan::find($id);
+    public function datapesanan($id){
+        $pesanan = DetailPesanan::where('id', $id)->first();
 
-        Pesanan::destroy($id);
+        if ($pesanan) {
+            return response()->json($pesanan);
+        } else {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+    }
+
+    public function hapuskeranjang($id){
+        $detpesanan = DetailPesanan::find($id);
+        $pesanan = Pesanan::where('id', $detpesanan->pesanan_id)->first();
+        $pesanan->update([
+            'total_harga' => $pesanan->total_harga - $detpesanan->jumlah_harga,
+            'modal_pesanan' => $pesanan->modal_pesanan - $detpesanan->modal_details
+        ]);
+        $detpesanan->delete();
 
         return redirect()->route("home.dashboard_pembeli")->with('success', 'Pesanan telah berhasil dihapus dari keranjang');
     }
@@ -125,13 +139,16 @@ class PesananController extends Controller
     public function prosescheckout(Request $request)
     {
         $selectedItems = $request->input('selected_items');
-        // dd($selectedItems);
-        foreach ($selectedItems as $itemId) {
-            $item[] = DetailPesanan::join('produk', 'produk.id_produk', '=', 'pesanandetails.produk_id')->where('id', $itemId)->where('produk.status_produk', 'Aktif')->first();
+        if($selectedItems == null){
+            return back()->with('error', 'Pilih produk terlebih dahaulu!');
+        }else{
+            foreach ($selectedItems as $itemId) {
+                $item[] = DetailPesanan::join('produk', 'produk.id_produk', '=', 'pesanandetails.produk_id')->where('id', $itemId)->where('produk.status_produk', 'Aktif')->first();
+            }
+            return view('pembeli.checkout', [
+                'item' => $item
+            ]);
         }
-        return view('pembeli.checkout', [
-            'item' => $item
-        ]);
     }
 
     public function checkoutproduk(Request $request)

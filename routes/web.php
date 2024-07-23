@@ -91,6 +91,7 @@ Route::get('/search', [ProdukController::class, 'search']);
 Route::get('/detailproduk/{id}',[ProdukController::class, 'detailproduk'])->name('pembeli.detailproduk');
 Route::post('/tambah/keranjang/{id}',[PesananController::class, 'tambahkeranjang'])->name('pembeli.tambahkeranjang');
 Route::get('/keranjang',[PesananController::class, 'keranjang'])->name('pembeli.keranjang');
+Route::get('/data/pesanan/{id}',[PesananController::class, 'datapesanan'])->name('datapesanan');
 Route::get('/checkout',[PesananController::class, 'checkout'])->name('pembeli.checkout');
 Route::post('/proses/checkout',[PesananController::class, 'prosescheckout'])->name('pembeli.prosescheckout');
 Route::post('/checkout/produk', [PesananController::class, 'checkoutproduk'])->name('pembeli.checkoutproduk');

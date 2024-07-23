@@ -90,7 +90,7 @@
                                         <img src="/product-images/{{$detail_pes->gambar_produk}}" alt="" class="w-100">
                                     </div>
                                     @if ($pes->status == 'Menunggu')
-                                        <div class="col-lg-4" style="place-self: center">
+                                        <div class="col-lg-6" style="place-self: center">
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <span class="pr-3"
@@ -115,81 +115,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-2" style="place-self: center; text-align:center">
-                                            <input type="hidden" name="kodePes" id="kodePes"
-                                                value="{{ $pes->kode }}">
-                                            <button data-toggle="modal" data-target=".cancelPesanan"
-                                                class="btn btn-danger">Batalkan Pesanan</button>
-                                        </div>
-                                        <div class="modal fade cancelPesanan" id="defaultModal" tabindex="-1"
-                                            role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-md" role="document">
-                                                <div class="modal-content">
-                                                    <form action="/pembatalan/pesanan/{{ $pes->kode }}"
-                                                        method="POST" name="form-cancel" id="form-cancel">
-                                                        @csrf
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="defaultModalLabel">Konfirmasi
-                                                                Pembatalan
-                                                                Pesanan
-                                                            </h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="col-lg-12">
-                                                                <div class="form-group mb-3">
-                                                                    <label for="alasan">Alasan Pembatalan</label>
-                                                                    <input type="text" id="alasan" name="alasan"
-                                                                        class="form-control">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn mb-2 btn-secondary"
-                                                                data-dismiss="modal">Tutup</button>
-                                                            <button type="button" onclick="canPes()"
-                                                                class="btn mb-2 btn-danger">Batalkan Pesanan</button>
-                                                        </div>
-                                                        <script>
-                                                            function canPes() {
-                                                                Swal.fire({
-                                                                    title: 'Konfirmasi',
-                                                                    text: 'Apakah Anda yakin ingin membatalkan pesanan ini?',
-                                                                    icon: 'warning',
-                                                                    showCancelButton: true,
-                                                                    confirmButtonText: 'Ya',
-                                                                    cancelButtonText: 'Batal',
-                                                                }).then((result) => {
-                                                                    if (result.isConfirmed) {
-                                                                        document.getElementById('form-cancel').submit();
-                                                                    }
-                                                                });
-                                                            }
-                                                        </script>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <script>
-                                            function batalkanPesanan() {
-                                                var kode = $('#kodePes').val();
-                                                Swal.fire({
-                                                    title: 'Konfirmasi',
-                                                    text: 'Apakah Anda yakin ingin membatalkan pesanan ini?',
-                                                    icon: 'warning',
-                                                    showCancelButton: true,
-                                                    confirmButtonText: 'Ya',
-                                                    cancelButtonText: 'Batal',
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        window.location.href = '/batalkan/pesanan/' + kode;
-                                                    }
-                                                });
-                                            }
-                                        </script>
                                     @else
                                         <div class="col-lg-6" style="place-self: center">
                                             <div class="row">
@@ -319,7 +244,7 @@
                                         <img src="/product-images/{{$detail_pes->gambar_produk}}" alt="" class="w-100">
                                     </div>
                                     @if ($pes->status == 'Menunggu')
-                                        <div class="col-lg-4" style="place-self: center">
+                                        <div class="col-lg-6" style="place-self: center">
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <span class="pr-3"
@@ -344,81 +269,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-2" style="place-self: center; text-align:center">
-                                            <input type="hidden" name="kodePes" id="kodePes"
-                                                value="{{ $pes->kode }}">
-                                            <button data-toggle="modal" data-target=".cancelPesanan"
-                                                class="btn btn-danger">Batalkan Pesanan</button>
-                                        </div>
-                                        <div class="modal fade cancelPesanan" id="defaultModal" tabindex="-1"
-                                            role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-md" role="document">
-                                                <div class="modal-content">
-                                                    <form action="/pembatalan/pesanan/{{ $pes->kode }}"
-                                                        method="POST" name="form-cancel" id="form-cancel">
-                                                        @csrf
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="defaultModalLabel">Konfirmasi
-                                                                Pembatalan
-                                                                Pesanan
-                                                            </h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="col-lg-12">
-                                                                <div class="form-group mb-3">
-                                                                    <label for="alasan">Alasan Pembatalan</label>
-                                                                    <input type="text" id="alasan" name="alasan"
-                                                                        class="form-control">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn mb-2 btn-secondary"
-                                                                data-dismiss="modal">Tutup</button>
-                                                            <button type="button" onclick="canPes()"
-                                                                class="btn mb-2 btn-danger">Batalkan Pesanan</button>
-                                                        </div>
-                                                        <script>
-                                                            function canPes() {
-                                                                Swal.fire({
-                                                                    title: 'Konfirmasi',
-                                                                    text: 'Apakah Anda yakin ingin membatalkan pesanan ini?',
-                                                                    icon: 'warning',
-                                                                    showCancelButton: true,
-                                                                    confirmButtonText: 'Ya',
-                                                                    cancelButtonText: 'Batal',
-                                                                }).then((result) => {
-                                                                    if (result.isConfirmed) {
-                                                                        document.getElementById('form-cancel').submit();
-                                                                    }
-                                                                });
-                                                            }
-                                                        </script>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <script>
-                                            function batalkanPesanan() {
-                                                var kode = $('#kodePes').val();
-                                                Swal.fire({
-                                                    title: 'Konfirmasi',
-                                                    text: 'Apakah Anda yakin ingin membatalkan pesanan ini?',
-                                                    icon: 'warning',
-                                                    showCancelButton: true,
-                                                    confirmButtonText: 'Ya',
-                                                    cancelButtonText: 'Batal',
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        window.location.href = '/batalkan/pesanan/' + kode;
-                                                    }
-                                                });
-                                            }
-                                        </script>
                                     @else
                                         <div class="col-lg-6" style="place-self: center">
                                             <div class="row">

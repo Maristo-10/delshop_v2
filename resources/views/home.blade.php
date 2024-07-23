@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" type="image/png" href="/pembeli/images/logo.png">
     <title>Delshop</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -143,6 +144,7 @@
                                                     'pesanandetails.id',
                                                 )
                                                     ->where('pesanans.user_id', Auth::user()->id)
+                                                    ->where('pesanans.status', 'keranjang')
                                                     ->count();
                                             @endphp
                                             @if ($jlhKeranjang == 0)

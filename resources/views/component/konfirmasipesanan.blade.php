@@ -268,7 +268,7 @@
                                                                                             <div class="row">
                                                                                                 <small
                                                                                                     style="font-weight: bold">{{ $det->nama_produk }}</small><br>
-                                                                                                @if (!empty($varPesanan))
+                                                                                                @if ($varPesanan == "")
                                                                                                     @for ($i = 0; $i < count($varPesanan); $i++)
                                                                                                         <small>{{ $varPesanan[$i][1] }}</small>
                                                                                                         @if ($i < count($varPesanan) - 1)
