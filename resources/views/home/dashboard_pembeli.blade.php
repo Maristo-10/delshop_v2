@@ -106,8 +106,11 @@
                         @endphp
                             <div class="item col-10">
                                 <div class="block-4 text-center">
+                                    @php
+                                        $gambar = json_decode($terbaru->gambar_produk, true);
+                                    @endphp
                                     <figure class="block-4-image">
-                                        <img src="/product-images/{{$terbaru->gambar_produk}}" alt="Image placeholder" class="img-fluid" style="min-height: 250px; max-height: 250px">
+                                        <img src="/product-images/{{$gambar[0]}}" alt="Image placeholder" class="img-fluid" style="min-height: 230px; max-height: 230px">
                                     </figure>
                                     <div class="block-4-text p-2">
                                         <h6><a href="/detailproduk/{{$terbaru->id_produk}}">{{$terbaru->nama_produk}}</a></h6>

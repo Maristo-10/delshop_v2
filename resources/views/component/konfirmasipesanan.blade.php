@@ -249,7 +249,10 @@
                                                                             </div>
                                                                             <div class="col-lg-2"
                                                                                 style="align-self: center">
-                                                                                <img src="/product-images/{{ $det->gambar_produk }}"
+                                                                                @php
+                                                                                    $gambar = json_decode($det->gambar_produk, true);
+                                                                                @endphp
+                                                                                <img src="/product-images/{{ $gambar[0] }}"
                                                                                     alt=""
                                                                                     class="w-100 img-fluid"
                                                                                     style="max-height: 100px; max-width: 100px">

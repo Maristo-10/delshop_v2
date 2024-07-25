@@ -21,12 +21,50 @@
         });
     </script>
 @endif
+<style>
+    /* CSS untuk mengubah warna ikon */
+    .carousel-control-prev-icon {
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+    }
+
+    .carousel-control-next-icon {
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+    }
+</style>
 <div class="site-section">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <img src="/product-images/{{ $produk->gambar_produk }}" alt="Image" class="img-fluid"
-                    style="max-height: 350px">
+                @php
+                    $djg = json_decode($produk->gambar_produk, true);
+                @endphp
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active text-center">
+                            <img src="/product-images/{{ $djg[0] }}" alt="Image" class="img-fluid"
+                                style="max-height: 350px">
+                        </div>
+                        @foreach ($djg as $gambar)
+                            @if ($gambar != $djg[0])
+                                <div class="carousel-item text-center">
+                                    <img src="/product-images/{{ $gambar }}" alt="Image" class="img-fluid"
+                                        style="max-height: 350px">
+                                </div>
+                            @endif
+                        @endforeach
+                        <a class="carousel-control-prev" type="button" data-target="#carouselExampleIndicators"
+                            data-slide="prev"
+                            style="border-color: unset; background-color:transparent;justify-content:left">
+                            <span class="carousel-control-prev-icon ml-4" aria-hidden="true"></span>
+                        </a>
+                        <a class="carousel-control-next" type="button" data-target="#carouselExampleIndicators"
+                            data-slide="next"
+                            style="border-color: unset; background-color:transparent;justify-content:right">
+                            <span class="carousel-control-next-icon mr-4" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                </div>
+
             </div>
             <div class="col-md-6">
                 <h2 class="text-black">{{ $produk->nama_produk }}</h2>
@@ -184,7 +222,7 @@
                                         }
                                     }
                                 }
-                            }else{
+                            } else {
                                 var nilai = 'empty'
                             }
                             window.location.href = '/beli/sekarang/' + idPro + '/' + jlh + '/' + nilai;

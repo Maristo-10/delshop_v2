@@ -29,6 +29,14 @@
 </head>
 
 <body>
+    <style>
+        .site-menu .active a {
+            color: #00337c !important;
+            /* Change this to your desired active link color */
+            font-weight: bold;
+            /* Change this to your desired active link style */
+        }
+    </style>
     <div class="site-wrap">
         <header class="site-navbar" role="banner">
             <div class="site-navbar-top" style="padding-top: 2%;padding-bottom:2%">
@@ -40,9 +48,12 @@
                                         class="w-100"></a>
                                 <nav class="site-navigation text-right text-md-center" role="navigation">
                                     <ul class="site-menu js-clone-nav d-none d-md-block">
-                                        <li><a href="/">Beranda</a></li>
-                                        <li><a href="/produk">Produk</a></li>
-                                        <li><a href="/riwayat-pesanan">Pesanan</a></li>
+                                        <li class="{{ Request::is('/') ? 'active' : '' }}"><a
+                                                href="/">Beranda</a></li>
+                                        <li class="{{ Request::is('produk') ? 'active' : '' }}"><a
+                                                href="/produk">Produk</a></li>
+                                        <li class="{{ Request::is('riwayat-pesanan') ? 'active' : '' }}"><a
+                                                href="/riwayat-pesanan">Pesanan</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -141,7 +152,7 @@
                                                     'pesanans',
                                                     'pesanans.id',
                                                     '=',
-                                                    'pesanandetails.id',
+                                                    'pesanandetails.pesanan_id',
                                                 )
                                                     ->where('pesanans.user_id', Auth::user()->id)
                                                     ->where('pesanans.status', 'keranjang')
@@ -261,6 +272,8 @@
         </footer>
     </div>
 
+
+
     <script src="{{ asset('pembeli/js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset('pembeli/js/jquery-ui.js') }}"></script>
     <script src="{{ asset('pembeli/js/popper.min.js') }}"></script>
@@ -270,6 +283,19 @@
     <script src="{{ asset('pembeli/js/aos.js') }}"></script>
 
     <script src="{{ asset('pembeli/js/main.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var currentPath = window.location.pathname;
+            var menuItems = document.querySelectorAll('.site-menu li a');
+
+            menuItems.forEach(function(item) {
+                if (item.getAttribute('href') === currentPath) {
+                    item.parentElement.classList.add('active');
+                }
+            });
+        });
+    </script>
 
 </body>
 

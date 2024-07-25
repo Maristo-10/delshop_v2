@@ -8,11 +8,13 @@
                             class="fa-solid fa-angle-left"></i> Kembali ke Pesanan Saya</a>
                     @if ($pesanan->status == 'Menunggu')
                         <input type="hidden" name="kodePes" id="kodePes" value="{{ $pesanan->kode }}">
-                        <button data-toggle="modal" data-target=".cancelPesanan" class="btn btn-danger" style="float: right">Batalkan
+                        <button data-toggle="modal" data-target=".cancelPesanan" class="btn btn-danger"
+                            style="float: right">Batalkan
                             Pesanan</button>
                         <div class="modal fade cancelPesanan" id="defaultModal" tabindex="-1" role="dialog"
                             aria-labelledby="defaultModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-md modal-dialog-centered" role="document" style="z-index: 1000">
+                            <div class="modal-dialog modal-md modal-dialog-centered" role="document"
+                                style="z-index: 1000">
                                 <div class="modal-content">
                                     <form action="/pembatalan/pesanan/{{ $pesanan->kode }}" method="POST"
                                         name="form-cancel" id="form-cancel">
@@ -88,6 +90,12 @@
                 @if ($pesanan->status == 'Diproses')
                     <div class="col-lg-12 p-2 bg-info" style="border-radius:7px">
                 @endif
+                @if ($pesanan->status == 'Selesai')
+                    <div class="col-lg-12 p-2 bg-success" style="border-radius:7px">
+                @endif
+                @if ($pesanan->status == 'Dibatalkan')
+                    <div class="col-lg-12 p-2 bg-danger" style="border-radius:7px">
+                @endif
                 <div class="row">
                     <div class="col-lg-1" style="align-self: center;text-align-last:center">
                         @if ($pesanan->status == 'Menunggu')
@@ -96,7 +104,12 @@
                         @if ($pesanan->status == 'Diproses')
                             <i class="fa-solid fa-spinner" style="font-size: xxx-large;color:white"></i>
                         @endif
-
+                        @if ($pesanan->status == 'Selesai')
+                            <i class="fa-solid fa-clipboard-check" style="font-size: xxx-large;color:white"></i>
+                        @endif
+                        @if ($pesanan->status == 'Dibatalkan')
+                            <i class="fa-solid fa-square-xmark" style="font-size: xxx-large;color:white"></i>
+                        @endif
                     </div>
                     <div class="col-lg-9">
                         <div class="col-12">
@@ -106,6 +119,12 @@
                             @if ($pesanan->status == 'Diproses')
                                 <h5 class="text-light">Pesanan Sedang Diproses</h5>
                             @endif
+                            @if ($pesanan->status == 'Selesai')
+                                <h5 class="text-light">Pesanan Selesai</h5>
+                            @endif
+                            @if ($pesanan->status == 'Dibatalkan')
+                                <h5 class="text-light">Pesanan Dibatalkan</h5>
+                            @endif
                         </div>
                         <div class="col-lg-12">
                             @if ($pesanan->status == 'Menunggu')
@@ -114,6 +133,19 @@
                             @endif
                             @if ($pesanan->status == 'Diproses')
                                 <h6 class="text-light">Pesanan sedang diproses oleh Petugas, mohon menunggu. </h6>
+                                <h6 class="text-light">Terimakasih!</h6>
+                            @endif
+                            @if ($pesanan->status == 'Selesai')
+                                <h6 class="text-light">Pesanan sudah diambil dari Delshop </h6>
+                                <h6 class="text-light">Terimakasih!</h6>
+                            @endif
+                            @if ($pesanan->status == 'Dibatalkan')
+                                @if ($pesanan->alasan == null)
+                                    <h6 class="text-light">Alasan pembatalan : -</h6>
+                                @else
+                                    <h6 class="text-light">Alasan pembatalan : {{ $pesanan->alasan }}</h6>
+                                @endif
+
                                 <h6 class="text-light">Terimakasih!</h6>
                             @endif
                         </div>

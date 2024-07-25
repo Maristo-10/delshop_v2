@@ -85,9 +85,11 @@
                                         }
                                         $jumlah_detail = count($detail);
                                         $sisa = $jumlah_detail - 1;
+
+                                        $gambarAll = json_decode($detail_pes->gambar_produk, true);
                                     @endphp
                                     <div class="col-lg-2" style="place-self: center">
-                                        <img src="/product-images/{{$detail_pes->gambar_produk}}" alt="" class="w-100">
+                                        <img src="/product-images/{{$gambarAll[0]}}" alt="" class="w-100">
                                     </div>
                                     @if ($pes->status == 'Menunggu')
                                         <div class="col-lg-6" style="place-self: center">
@@ -239,9 +241,11 @@
                                         }
                                         $jumlah_detail = count($detail);
                                         $sisa = $jumlah_detail - 1;
+
+                                        $gambarMenunggu = json_decode($detail_pes->gambar_produk, true);
                                     @endphp
                                     <div class="col-lg-2" style="place-self: center">
-                                        <img src="/product-images/{{$detail_pes->gambar_produk}}" alt="" class="w-100">
+                                        <img src="/product-images/{{$gambarMenunggu[0]}}" alt="" class="w-100">
                                     </div>
                                     @if ($pes->status == 'Menunggu')
                                         <div class="col-lg-6" style="place-self: center">
@@ -393,9 +397,11 @@
                                         }
                                         $jumlah_detail = count($detail);
                                         $sisa = $jumlah_detail - 1;
+
+                                        $gambarDiproses = json_decode($detail_pes->gambar_produk, true);
                                     @endphp
                                     <div class="col-lg-2" style="place-self: center">
-                                        <img src="/product-images/{{$detail_pes->gambar_produk}}" alt="" class="w-100">
+                                        <img src="/product-images/{{$gambarDiproses[0]}}" alt="" class="w-100">
                                     </div>
                                     @if ($pes->status == 'Menunggu')
                                         <div class="col-lg-4" style="place-self: center">
@@ -622,9 +628,11 @@
                                         }
                                         $jumlah_detail = count($detail);
                                         $sisa = $jumlah_detail - 1;
+
+                                        $gambarSelesai = json_decode($detail_pes->gambar_produk, true);
                                     @endphp
                                     <div class="col-lg-2" style="place-self: center">
-                                        <img src="/product-images/{{$detail_pes->gambar_produk}}" alt="" class="w-100">
+                                        <img src="/product-images/{{$gambarSelesai[0]}}" alt="" class="w-100">
                                     </div>
                                     @if ($pes->status == 'Menunggu')
                                         <div class="col-lg-4" style="place-self: center">
@@ -851,9 +859,11 @@
                                         }
                                         $jumlah_detail = count($detail);
                                         $sisa = $jumlah_detail - 1;
+
+                                        $gambarDibatalkan = json_decode($detail_pes->gambar_produk, true);
                                     @endphp
                                     <div class="col-lg-2" style="place-self: center">
-                                        <img src="/product-images/{{$detail_pes->gambar_produk}}" alt="" class="w-100">
+                                        <img src="/product-images/{{$gambarDibatalkan[0]}}" alt="" class="w-100">
                                     </div>
                                     @if ($pes->status == 'Menunggu')
                                         <div class="col-lg-4" style="place-self: center">

@@ -43,7 +43,7 @@
                         <select class="form-control" id="kategori_produk" name="kategori_produk">
                             <option disabled selected>Pilih Kategori Produk</option>
                             @foreach ($kategori_produk as $kapro)
-                                <option value="{{$kapro->kategori}}">{{$kapro->kategori}}</option>
+                                <option value="{{ $kapro->kategori }}">{{ $kapro->kategori }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -60,8 +60,14 @@
                     </div>
                     <div class="form-group mb-3">
                         <label for="gambar_produk">Gambar Produk</label>
-                        <div class="custom-file">
-                            <input type="file" class="form-control-file" id="gambar_produk" name="gambar_produk">
+                        <div class="custom-file" id="field-gambar">
+                            <div class="input-group">
+                                <input type="file" class="form-control col-md-5" id="gambar_produk"
+                                    name="gambar_produk[]" style="border-color:transparent">
+                                <button type="button" onclick="tambahGambar()"
+                                    class="text-dark btn btn-md btn-success"><i class="fa-solid fa-square-plus fa-lg"
+                                        id="tambah-fproduk"></i>Tambah Gambar Produk</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,4 +173,18 @@
             $(this).closest('.tambahan-variasi').remove();
         });
     });
+
+    function tambahGambar() {
+        var newInput =
+            '<div class="input-group mb-3 mt-2" id="fgambar">' +
+            '<input type="file" class="form-control col-md-5" id="gambar_produk" name="gambar_produk[]" style="border-color:transparent">' +
+            '<button type="button" id="hapusgambar" class="text-white btn btn-md btn-danger">' +
+            '<i class="fa-solid fa-trash fa-lg"></i></button>'
+        '</div>';
+        $('#field-gambar').append(newInput);
+    };
+
+    $('#field-gambar').on('click', '#hapusgambar', function() {
+            $(this).closest('#fgambar').remove();
+        });
 </script>

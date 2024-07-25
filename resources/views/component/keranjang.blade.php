@@ -97,8 +97,11 @@
                                             for="check2-{{ $no2++ }}"></label>
                                     </div>
                                 </div>
+                                @php
+                                    $gambar = json_decode($detail->gambar_produk, true);
+                                @endphp
                                 <div class="col-lg-2" style="place-self: center">
-                                    <img src="/product-images/{{ $detail->gambar_produk }}" alt=""
+                                    <img src="/product-images/{{ $gambar[0] }}" alt=""
                                         class="w-100">
                                 </div>
                                 <div class="col-lg-5" style="place-self: center">

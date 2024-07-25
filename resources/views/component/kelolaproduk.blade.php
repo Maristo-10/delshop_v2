@@ -24,6 +24,16 @@
         });
     </script>
 @endif
+<style>
+    /* CSS untuk mengubah warna ikon */
+    .carousel-control-prev-icon {
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+    }
+
+    .carousel-control-next-icon {
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+    }
+</style>
 <div class="row my-4">
     <!-- Small table -->
     <div class="col-md-12">
@@ -119,138 +129,180 @@
                                                     <h4>{{ $data->nama_produk }}</h4>
                                                 </div>
                                                 <div class="col-lg-12 text-center">
-                                                    <img class="w-25"
-                                                        src="/product-images/{{ $data->gambar_produk }}"
-                                                        alt="">
-                                                </div>
-                                                <div class="col-lg-12 pt-3">
-                                                    <div class="row">
-                                                        <div class="col-5">
-                                                            <h5>Modal</h5>
-                                                        </div>
-                                                        <div class="col-1">
-                                                            <h5> : </h5>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <h5 class="text-secondary"> Rp. <?php
-                                                            $angka = $data->modal;
-                                                            echo number_format($angka, 0, ',', '.');
-                                                            ?></h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-12 pt-3">
-                                                    <div class="row">
-                                                        <div class="col-5">
-                                                            <h5>Harga Jual</h5>
-                                                        </div>
-                                                        <div class="col-1">
-                                                            <h5> : </h5>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <h5 class="text-secondary"> Rp. <?php
-                                                            $angka = $data->harga;
-                                                            echo number_format($angka, 0, ',', '.');
-                                                            ?></h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-12 pt-3">
-                                                    <div class="row">
-                                                        <div class="col-5">
-                                                            <h5>Jumlah Produk</h5>
-                                                        </div>
-                                                        <div class="col-1">
-                                                            <h5> : </h5>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <h5 class="text-secondary"><?php
-                                                            $angka = $data->jumlah_produk;
-                                                            echo number_format($angka, 0, ',', '.');
-                                                            ?></h5>
+                                                    @php
+                                                        $djg = json_decode($data->gambar_produk, true);
+                                                    @endphp
+
+                                                    <div id="carouselExampleIndicators" class="carousel slide"
+                                                        data-ride="carousel">
+                                                        <div class="carousel-inner">
+                                                            <div class="carousel-item active">
+                                                                <img class="w-25"
+                                                                    src="/product-images/{{ $djg[0] }}"
+                                                                    alt="">
+                                                            </div>
+                                                            @foreach ($djg as $gambar)
+                                                                @if ($gambar != $djg[0])
+                                                                    <div class="carousel-item">
+                                                                        <img class="w-25"
+                                                                            src="/product-images/{{ $gambar }}"
+                                                                            alt="">
+                                                                    </div>
+                                                                @endif
+                                                            @endforeach
+                                                            <a class="carousel-control-prev" type="button"
+                                                                data-target="#carouselExampleIndicators"
+                                                                data-slide="prev"
+                                                                style="border-color: unset; background-color:transparent;justify-content:left">
+                                                                <span class="carousel-control-prev-icon ml-4"
+                                                                    aria-hidden="true"></span>
+                                                            </a>
+                                                            <a class="carousel-control-next" type="button"
+                                                                data-target="#carouselExampleIndicators"
+                                                                data-slide="next"
+                                                                style="border-color: unset; background-color:transparent;justify-content:right">
+                                                                <span class="carousel-control-next-icon mr-4"
+                                                                    aria-hidden="true"></span>
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-12 pt-3">
-                                                    <div class="row">
-                                                        <div class="col-5">
-                                                            <h5>Kategori Produk</h5>
-                                                        </div>
-                                                        <div class="col-1">
-                                                            <h5> : </h5>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <h5 class="text-secondary">{{ $data->kategori_produk }}
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-12 pt-3">
-                                                    <div class="row">
-                                                        <div class="col-5">
-                                                            <h5>Kategori Pembeli</h5>
-                                                        </div>
-                                                        <div class="col-1">
-                                                            <h5> : </h5>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <h5 class="text-secondary">{{ $data->role_pembeli }}</h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @php
-                                                    $variasiproduk = \App\Models\VariasiProduk::where(
-                                                        'produk_id',
-                                                        $data->id_produk,
-                                                    )->get();
-                                                    $indeks = 1;
-                                                @endphp
-                                                @if (!empty($variasiproduk))
                                                     <div class="col-lg-12 pt-3">
                                                         <div class="row">
-                                                            @foreach ($variasiproduk as $vp)
-                                                                <div class="col-12">
-                                                                    <h5>Variasi Produk</h5>
-                                                                </div>
-                                                                <div class="col-12">
-                                                                    <h5 class="text-secondary">{{ $indeks++ }}.
-                                                                        {{ $vp->nama_variasi }}</h5>
-                                                                </div>
-                                                                @php
-                                                                    $jenisV = json_decode($vp->variasi, true);
-                                                                @endphp
-                                                                <div class="col-12">
-                                                                    @for ($i = 0; $i < count($jenisV); $i++)
-                                                                        <span class="text-secondary">{{ $jenisV[$i] }}
-                                                                        </span>
-                                                                        @if ($i < count($jenisV) - 1)
-                                                                            ,
-                                                                        @endif
-                                                                    @endfor
-                                                                </div>
-                                                            @endforeach
+                                                            <div class="col-5">
+                                                                <h5>Modal</h5>
+                                                            </div>
+                                                            <div class="col-1">
+                                                                <h5> : </h5>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h5 class="text-secondary"> Rp. <?php
+                                                                $angka = $data->modal;
+                                                                echo number_format($angka, 0, ',', '.');
+                                                                ?>
+                                                                </h5>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                @endif
-                                                <div class="col-lg-12 pt-3">
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <h5>Deskripsi Produk</h5>
+                                                    <div class="col-lg-12 pt-3">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <h5>Harga Jual</h5>
+                                                            </div>
+                                                            <div class="col-1">
+                                                                <h5> : </h5>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h5 class="text-secondary"> Rp. <?php
+                                                                $angka = $data->harga;
+                                                                echo number_format($angka, 0, ',', '.');
+                                                                ?>
+                                                                </h5>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-12">
-                                                            <h5 class="text-secondary">{{ $data->deskripsi }}</h5>
+                                                    </div>
+                                                    <div class="col-lg-12 pt-3">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <h5>Jumlah Produk</h5>
+                                                            </div>
+                                                            <div class="col-1">
+                                                                <h5> : </h5>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h5 class="text-secondary"><?php
+                                                                $angka = $data->jumlah_produk;
+                                                                echo number_format($angka, 0, ',', '.');
+                                                                ?></h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 pt-3">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <h5>Kategori Produk</h5>
+                                                            </div>
+                                                            <div class="col-1">
+                                                                <h5> : </h5>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h5 class="text-secondary">
+                                                                    {{ $data->kategori_produk }}
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 pt-3">
+                                                        <div class="row">
+                                                            <div class="col-5">
+                                                                <h5>Kategori Pembeli</h5>
+                                                            </div>
+                                                            <div class="col-1">
+                                                                <h5> : </h5>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h5 class="text-secondary">
+                                                                    {{ $data->role_pembeli }}
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @php
+                                                        $variasiproduk = \App\Models\VariasiProduk::where(
+                                                            'produk_id',
+                                                            $data->id_produk,
+                                                        )->get();
+                                                        $indeks = 1;
+                                                    @endphp
+                                                    @if (!empty($variasiproduk))
+                                                        <div class="col-lg-12 pt-3">
+                                                            <div class="row">
+                                                                @foreach ($variasiproduk as $vp)
+                                                                    <div class="col-12">
+                                                                        <h5>Variasi Produk</h5>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <h5 class="text-secondary">
+                                                                            {{ $indeks++ }}.
+                                                                            {{ $vp->nama_variasi }}</h5>
+                                                                    </div>
+                                                                    @php
+                                                                        $jenisV = json_decode($vp->variasi, true);
+                                                                    @endphp
+                                                                    <div class="col-12">
+                                                                        @for ($i = 0; $i < count($jenisV); $i++)
+                                                                            <span
+                                                                                class="text-secondary">{{ $jenisV[$i] }}
+                                                                            </span>
+                                                                            @if ($i < count($jenisV) - 1)
+                                                                                ,
+                                                                            @endif
+                                                                        @endfor
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                    <div class="col-lg-12 pt-3">
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <h5>Deskripsi Produk</h5>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <h5 class="text-secondary">{{ $data->deskripsi }}
+                                                                </h5>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn mb-2 btn-secondary"
-                                                data-dismiss="modal">Tutup</button>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn mb-2 btn-secondary"
+                                                    data-dismiss="modal">Tutup</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                         @endforeach
                     </tbody>
                 </table>

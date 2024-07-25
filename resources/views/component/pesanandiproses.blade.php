@@ -191,9 +191,12 @@
                                                                             <div class="col-lg-2">
                                                                                 <small>{{ $num++ }}. </small>
                                                                             </div>
+                                                                            @php
+                                                                                    $gambar = json_decode($det->gambar_produk, true);
+                                                                                @endphp
                                                                             <div class="col-lg-2"
                                                                                 style="align-self: center">
-                                                                                <img src="/product-images/{{ $det->gambar_produk }}"
+                                                                                <img src="/product-images/{{ $gambar[0]}}"
                                                                                     alt=""
                                                                                     class="w-100 img-fluid"
                                                                                     style="max-height: 100px; max-width: 100px">

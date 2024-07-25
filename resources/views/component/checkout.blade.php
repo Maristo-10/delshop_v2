@@ -30,8 +30,11 @@
                     @foreach ($item as $data)
                         <div class="col-lg-12 mb-4" style="border: solid 1px; border-radius: 5px">
                             <div class="row p-4">
+                                @php
+                                    $gambar = json_decode($data->gambar_produk, true);
+                                @endphp
                                 <div class="col-lg-2" style="place-self: center">
-                                    <img src="/product-images/{{ $data->gambar_produk }}" alt="" class="w-100">
+                                    <img src="/product-images/{{ $gambar[0] }}" alt="" class="w-100">
                                 </div>
                                 <div class="col-lg-6" style="place-self: center">
                                     <div class="row">
@@ -171,8 +174,11 @@
                     </div>
                     <div class="col-lg-12 mb-4" style="border: solid 1px; border-radius: 5px">
                         <div class="row p-4">
+                            @php
+                                    $gambar = json_decode($produk->gambar_produk, true);
+                                @endphp
                             <div class="col-lg-2" style="place-self: center">
-                                <img src="/product-images/{{ $produk->gambar_produk }}" alt=""
+                                <img src="/product-images/{{ $gambar[0] }}" alt=""
                                     class="w-100">
                             </div>
                             <div class="col-lg-6" style="place-self: center">

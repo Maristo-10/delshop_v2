@@ -97,8 +97,8 @@ class ProdukController extends Controller
             'kategori_produk' => 'required',
             'kategori_pembeli' => 'required',
             'deskripsi' => 'required',
-            'gambar_produk' => 'required|image|file|max:10000',
         ]);
+
         $arrName = [];
         $tambahproduk = new Produk();
         $tambahproduk->nama_produk = $request->nama_produk;
@@ -109,11 +109,17 @@ class ProdukController extends Controller
         $tambahproduk->role_pembeli = $request->kategori_pembeli;
         $tambahproduk->deskripsi = $request->deskripsi;
 
+
         if ($request->file('gambar_produk')) {
             if ($request->hasfile('gambar_produk')) {
-                $filename = round(microtime(true) * 1000) . '-' . str_replace(' ', '-', $request->file('gambar_produk')->getClientOriginalName());
-                $request->file('gambar_produk')->move(public_path('product-images'), $filename);
-                $tambahproduk->gambar_produk = $filename;
+                $arGambar = [];
+                foreach($request->file('gambar_produk') as $gambar){
+                    $filename = round(microtime(true) * 1000) . '-' . str_replace(' ', '-', $gambar->getClientOriginalName());
+                    $gambar->move(public_path('product-images'), $filename);
+                    array_push($arGambar, $filename);
+                }
+                $jsGambar = json_encode($arGambar);
+                $tambahproduk->gambar_produk = $jsGambar;
             }
         }
         if (!$tambahproduk->save()) {
